@@ -8,7 +8,8 @@
 # MaaGumballs
 
 基于全新架构的 不思议迷宫 小助手。图像技术 + 模拟控制，解放双手！
-由 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 强力驱动！
+由 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 强力驱动！  
+<a href="https://github.com/KhazixW2/MaaGumballs" target="_blank" style="font-weight: bold;">🔗 本项目 GitHub 仓库</a>
 
 </div>
 <p align="center">
