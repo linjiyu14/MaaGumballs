@@ -4,6 +4,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from utils.shareConfig import init_config
+
 # 获取当前main.py所在路径并设置上级目录为工作目录
 current_file_path = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file_path)
@@ -60,7 +62,31 @@ def read_pip_config() -> dict:
         logger.exception("读取pip配置失败，使用默认配置")
         return default_config
 
+# 获取当前工作目录
+def read_customize_config() -> dict:
+    """
+    读取 pip 配置文件并返回配置字典
+    """
+    config_dir = Path("./config")
+    config_dir.mkdir(exist_ok=True)
 
+    config_path = config_dir / "customize.json"
+    default_config = {
+        "smtp_key":"",
+        "receive_email":""
+    }
+
+    if not config_path.exists():
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(default_config, f, indent=4)
+        return default_config
+
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        logger.exception("读取pip配置失败，使用默认配置")
+        return default_config
 def get_available_mirror(pip_config: dict) -> str:
     """
     检查镜像源可用性并返回一个可用的镜像源
@@ -181,7 +207,10 @@ def check_and_install_dependencies():
             logger.warning("依赖安装失败，程序可能无法正常运行")
     else:
         logger.info("跳过依赖安装")
-
+        
+    customize_config = read_customize_config()
+    init_config(customize_config)
+    logger.info(f"自定义配置文件读取完成: {customize_config}")
 
 def read_interface_version(interface_file="./interface.json") -> str:
     """
