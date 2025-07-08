@@ -1,4 +1,4 @@
-class dataProcess:
+class configProcess:
     
     def __init__(self, data: dict):
         self.data = data
