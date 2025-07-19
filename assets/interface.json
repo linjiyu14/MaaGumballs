@@ -59,23 +59,38 @@
             ]
         },
         {
-            "name": "港台服",
+            "name": "hk_tw",
             "path": [
                 "{PROJECT_DIR}/resource/base",
                 "{PROJECT_DIR}/resource/hk_tw"
             ]
         },
         {
-            "name": "测试服",
+            "name": "test",
             "path": [
                 "{PROJECT_DIR}/resource/base",
                 "{PROJECT_DIR}/resource/test"
+            ]
+        },
+        {
+            "name": "tencent",
+            "path": [
+                "{PROJECT_DIR}/resource/base",
+                "{PROJECT_DIR}/resource/tencent"
+            ]
+        },
+        {
+            "name": "9u",
+            "path": [
+                "{PROJECT_DIR}/resource/base",
+                "{PROJECT_DIR}/resource/9u"
             ]
         }
     ],
     "agent": {
         "child_exec": "python",
         "child_args": [
+            "-u",
             "{PROJECT_DIR}/agent/main.py"
         ]
     },
@@ -154,6 +169,9 @@
                 "自动肉鸽时使用钻石购买体力"
             ],
             "pipeline_override": {
+                "Select_WorldTree_InputBox_Text": {
+                    "input_text": "二郎神"
+                },
                 "Select_Drug_Next": {
                     "template": "items/狼人药剂.png"
                 },
@@ -210,7 +228,8 @@
                 "   - 遇异常时提供截图/录屏/maa.log文件反馈  ",
                 "   - 肉鸽模式里，如果是笔记本电脑则必须开启性能模式, 省电模式出现的bug将不会解决  ",
                 "",
-                "> 流程:大地图进竞技场 → 选二郎神 → 开自动拾取 → 处理钥匙小游戏 → 启动全自动"
+                "> 流程:大地图进竞技场 → 选二郎神 → 开自动拾取 → 处理钥匙小游戏 → 启动全自动",
+                "> 笔者是根据mumu1080*1920 dpi 480开发的, 设备型号为Samsung GalaxyS24,请在出现问题时检查配置"
             ]
         },
         {
@@ -224,9 +243,13 @@
             "repeatable": true,
             "repeat_count": 1,
             "option": [
-                "自动肉鸽时使用钻石购买体力"
+                "自动肉鸽时使用钻石购买体力",
+                "目标出图楼层"
             ],
             "pipeline_override": {
+                "Select_WorldTree_InputBox_Text": {
+                    "input_text": "仿生人"
+                },
                 "Select_Drug_Next": {
                     "template": "items/电能试剂.png"
                 },
@@ -254,15 +277,16 @@
                 "     > 2. 如果在局内，直接接管局内开始",
                 "",
                 "2. **楼层操作**  ",
-                "   - 自动点称号(3/66/76层)",
-                "   - 自动释放大地之门(67/68层)  ",
+                "   - 自动点称号(3/58/76层)",
+                "   - 自动释放大地之门(50以后*9层)  ",
                 "   - 自动检查状态并使用恢复法术(≥50层的*1/5/*9层)  ",
                 "   - 自动处理玛尔斯石碑、宝箱奖励、各类商人事件",
                 "   - 神龙工资事件",
                 "",
                 "3. **Boss与迷宫策略**  ",
+                "   - 小怪层清理主要靠AAA,不适用技能",
                 "   - Boss战三根柱子,AAAA,中间穿插冰锥",
-                "   - 99层自动拿隐藏(未实装)并出图结算  ",
+                "   - 89层自动拿隐藏(未实装)并就九柱武器大师证件出图结算  ",
                 "---",
                 "",
                 "### 需用户手动操作事项",
@@ -278,7 +302,8 @@
                 "   - 遇异常时提供截图/录屏/maa.log文件反馈  ",
                 "   - 肉鸽模式里，如果是笔记本电脑则必须开启性能模式, **省电模式出现的bug将不会解决**  ",
                 "",
-                "> 流程：大地图进玛尔斯神殿 → 选仿生人 → 开自动拾取 → 处理钥匙小游戏 → 启动全自动"
+                "> 流程：大地图进玛尔斯神殿 → 选仿生人 → 开自动拾取 → 处理钥匙小游戏 → 启动全自动",
+                "> 笔者是根据mumu1080*1920 dpi 480开发的, 设备型号为Samsung GalaxyS24,请在出现问题时检查配置"
             ]
         },
         {
@@ -352,13 +377,20 @@
         {
             "name": "时空域(测试)",
             "entry": "TSD_Entry",
+            "option": [
+                "是否探索废墟等事件",
+                "是否清理主地图小怪",
+                "是否清理主地图BOSS"
+            ],
             "doc": [
                 "### 介绍",
-                "时空域自动探索,目前仅支持探索废墟类事件",
+                "时空域自动探索,目前支持探索废墟类事件，清理主地图小怪及BOSS",
                 "### 使用前检查",
                 "- 确保已开启外域及时空域,并且大地图右下角按钮是【外域】,且已进入时空域",
+                "- 默认所有舰队能损无战胜所有小怪，最高战力舰队能战胜BOSS",
+                "- 在选项勾选此次要完成的任务",
                 "### 其他",
-                "打怪、特殊事件、空间奇点及星球内部事件,后续提供支持"
+                "特殊事件、空间奇点及星球内部事件,后续提供支持"
             ]
         },
         {
@@ -485,6 +517,26 @@
                 }
             ]
         },
+        "目标出图楼层": {
+            "cases": [
+                {
+                    "name": "89",
+                    "pipeline_override": {
+                        "Mars_Target_Layer_Setting": {
+                            "expected": "89"
+                        }
+                    }
+                },
+                {
+                    "name": "119",
+                    "pipeline_override": {
+                        "Mars_Target_Layer_Setting": {
+                            "expected": "119"
+                        }
+                    }
+                }
+            ]
+        },
         "目标日光数及自动熔设定": {
             "default_case": "18日光/自动熔至3星用完",
             "cases": [
@@ -584,6 +636,66 @@
                                 "target_sunlight": 21,
                                 "auto_melt": 6
                             }
+                        }
+                    }
+                }
+            ]
+        },
+        "是否探索废墟等事件": {
+            "cases": [
+                {
+                    "name": "no",
+                    "pipeline_override": {
+                        "TSD_CheckExploreTask": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "yes",
+                    "pipeline_override": {
+                        "TSD_CheckExploreTask": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "是否清理主地图小怪": {
+            "cases": [
+                {
+                    "name": "no",
+                    "pipeline_override": {
+                        "TSD_CheckMonsterTask": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "yes",
+                    "pipeline_override": {
+                        "TSD_CheckMonsterTask": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "是否清理主地图BOSS": {
+            "cases": [
+                {
+                    "name": "no",
+                    "pipeline_override": {
+                        "TSD_CheckMonsterBossTask": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "yes",
+                    "pipeline_override": {
+                        "TSD_CheckMonsterBossTask": {
+                            "enabled": true
                         }
                     }
                 }

@@ -2,11 +2,14 @@ from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
 from maa.context import Context
 from utils import logger
+from action.fight.fightUtils import timing_decorator
 
 from action.fight import fightUtils
 from action.fight import fightProcessor
 
 import time
+import json
+
 
 boss_x, boss_y = 360, 800
 
@@ -15,12 +18,13 @@ boss_x, boss_y = 360, 800
 class Mars101(CustomAction):
     def __init__(self):
         super().__init__()
-        self.isTitle_L3 = False
-        self.isTitle_L66 = False
+        self.isTitle_L5 = False
+        self.isTitle_L58 = False
         self.isTitle_L76 = False
         self.useEarthGate = 0
-        self.isShutDownTitan = False
+        self.isGetTitanFoot = False
         self.is_android_skill_enabled = False
+        self.isLeaveMaze = False
         self.layers = 1
 
     def initialize(self, context: Context):
@@ -36,6 +40,22 @@ class Mars101(CustomAction):
 
         # 进入地图初始化
         logger.info(f"当前层数: {self.layers}, 进入地图初始化")
+
+    def Check_CurrentLayers(self, context: Context):
+        context.run_task("Fight_ReturnMainWindow")
+        tempLayers = -1
+        while tempLayers <= 0 and (
+            RunResult := context.run_recognition(
+                "Fight_CheckLayer",
+                context.tasker.controller.post_screencap().wait().get(),
+            )
+        ):
+            tempLayers = fightUtils.extract_num_layer(RunResult.best_result.text)
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return False
+        self.layers = tempLayers
+        return True
 
     def Check_DefaultEquipment(self, context: Context):
         """
@@ -64,60 +84,64 @@ class Mars101(CustomAction):
     def Check_DefaultTitle(self, context: Context):
         """
         检查默认称号
-        1. 检查66层的称号: 位面点满即可
+        1. 检查5层的称号: 魔法学徒和符文师点满
+        1. 检查58层的称号: 位面点满即可
         3. 检查76层的称号: 位面，大铸剑师，大剑师都点满
         """
-        if (self.layers == 3 or self.layers == 4) and self.isTitle_L3 == False:
+        if (self.layers == 5 or self.layers == 6) and self.isTitle_L5 == False:
             fightUtils.title_learn("魔法", 1, "魔法学徒", 3, context)
+            fightUtils.title_learn("冒险", 1, "寻宝者", 1, context)
+            fightUtils.title_learn("冒险", 2, "勘探家", 1, context)
+            fightUtils.title_learn("冒险", 3, "符文师", 3, context)
             context.run_task("Fight_ReturnMainWindow")
-            self.isTitle_L3 = True
+            self.isTitle_L5 = True
+            return True
 
-        elif (self.layers == 65 or self.layers == 66) and self.isTitle_L66 == False:
+        elif (self.layers >= 58 and self.layers <= 68) and self.isTitle_L58 == False:
             fightUtils.title_learn("魔法", 1, "魔法学徒", 3, context)
-            fightUtils.title_learn("魔法", 2, "黑袍法师", 3, context)
-            fightUtils.title_learn("魔法", 3, "咒术师", 3, context)
-            fightUtils.title_learn("魔法", 4, "土系大师", 3, context)
+            fightUtils.title_learn("魔法", 2, "黑袍法师", 1, context)
+            fightUtils.title_learn("魔法", 3, "咒术师", 1, context)
+            fightUtils.title_learn("魔法", 4, "土系大师", 1, context)
             fightUtils.title_learn("魔法", 5, "位面先知", 1, context)
             fightUtils.title_learn_branch("魔法", 5, "魔力强化", 3, context)
             fightUtils.title_learn_branch("魔法", 5, "生命强化", 3, context)
             fightUtils.title_learn_branch("魔法", 5, "魔法强化", 3, context)
+            context.run_task("Fight_ReturnMainWindow")
 
+            # 如果探索点足够,则把土系大师也学习了
+            fightUtils.title_learn("魔法", 4, "土系大师", 3, context)
             context.run_task("Fight_ReturnMainWindow")
             context.run_task("Save_Status")
             context.run_task("Fight_ReturnMainWindow")
-            self.isTitle_L66 = True
+            self.isTitle_L58 = True
+            return True
 
-        elif self.layers == 76 or self.layers == 77 and self.isTitle_L76 == False:
+        elif (self.layers >= 76 and self.layers <= 86) and self.isTitle_L76 == False:
             fightUtils.title_learn("战斗", 1, "见习战士", 3, context)
             fightUtils.title_learn("战斗", 2, "战士", 3, context)
             fightUtils.title_learn("战斗", 3, "剑舞者", 3, context)
             fightUtils.title_learn("战斗", 4, "大剑师", 3, context)
+            fightUtils.title_learn("魔法", 2, "黑袍法师", 3, context)
+            fightUtils.title_learn("魔法", 3, "咒术师", 3, context)
+            fightUtils.title_learn("魔法", 4, "土系大师", 3, context)
             fightUtils.title_learn("冒险", 1, "寻宝者", 3, context)
             fightUtils.title_learn("冒险", 2, "勘探家", 3, context)
-            fightUtils.title_learn("冒险", 3, "锻造师", 3, context)
+            fightUtils.title_learn("冒险", 3, "符文师", 3, context)
             fightUtils.title_learn("冒险", 4, "武器大师", 3, context)
             fightUtils.title_learn("冒险", 5, "大铸剑师", 1, context)
             fightUtils.title_learn_branch("冒险", 5, "攻击强化", 3, context)
             fightUtils.title_learn_branch("冒险", 5, "生命强化", 3, context)
             fightUtils.title_learn_branch("冒险", 5, "魔法强化", 3, context)
 
-            if fightUtils.title_check("巨龙", context):
-                fightUtils.title_learn("巨龙", 1, "亚龙血统", 3, context)
-                fightUtils.title_learn("巨龙", 2, "初级龙族血统", 3, context)
-                fightUtils.title_learn("巨龙", 3, "中级龙族血统", 3, context)
-                fightUtils.title_learn("巨龙", 4, "高级龙族血统", 3, context)
-                fightUtils.title_learn("巨龙", 5, "邪龙血统", 1, context)
-                fightUtils.title_learn_branch("巨龙", 5, "生命强化", 3, context)
-                fightUtils.title_learn_branch("巨龙", 5, "攻击强化", 3, context)
-
             context.run_task("Fight_ReturnMainWindow")
             context.run_task("Save_Status")
             context.run_task("Fight_ReturnMainWindow")
             self.isTitle_L76 = True
+            return True
+        return False
 
     def Check_DefaultStatus(self, context: Context):
-
-        # 检查冈布奥状态
+        """检查冈布奥状态"""
         tempNum = self.layers % 10
         if (
             (11 <= self.layers <= 79) and (tempNum == 1 or tempNum == 5 or tempNum == 9)
@@ -129,7 +153,8 @@ class Mars101(CustomAction):
             logger.info(f"current hp is {CurrentHP}, HPStatus is {HPStatus}")
 
             if HPStatus < 0.8:
-                fightUtils.cast_magic_special("生命颂歌", context)
+                if self.layers <= 60:
+                    fightUtils.cast_magic_special("生命颂歌", context)
                 while HPStatus < 0.8:
                     if not fightUtils.cast_magic("光", "神恩术", context):
                         if not fightUtils.cast_magic("水", "治疗术", context):
@@ -145,24 +170,45 @@ class Mars101(CustomAction):
             else:
                 logger.info("当前生命值大于80%，不使用治疗")
 
+            # 保命
+            if self.layers >= 51 and not fightUtils.checkBuffStatus(
+                "神圣重生", context
+            ):
+                fightUtils.cast_magic("光", "神圣重生", context)
         return True
 
+    def Check_TitanFoot(self, context: Context):
+        # 如果中途启动,检查一下,备用
+        if self.isGetTitanFoot == False and self.layers % 10 == 1:
+            if fightUtils.cast_magic_special("泰坦之足", context):
+                self.isGetTitanFoot = True
+
     def handle_android_skill_event(self, context: Context):
-        target_skill_list = ["外接皮", "机械起搏器"]
+        target_skill_list = ["外接皮", "机械起"]
         if (
             self.layers == 5 or self.layers == 6
         ) and self.is_android_skill_enabled == False:
             for skill in target_skill_list:
+                if skill == "外接皮":
+                    target_skill_checkroi = [266, 605, 96, 96]
+                if skill == "机械起":
+                    target_skill_checkroi = [363, 605, 96, 96]
                 if context.run_recognition(
-                    "Mars_Android_Skill_Open",
+                    "Mars_Android_Skill",
                     context.tasker.controller.post_screencap().wait().get(),
                 ):
                     context.run_task(
-                        "Mars_Android_Skill_Open",
+                        "Mars_Android_Skill",
                         pipeline_override={
                             "Mars_Android_Skill_Choose": {
                                 "expected": skill,
-                            }
+                            },
+                            "Mars_Android_Skill_Choose_Fail": {
+                                "roi": target_skill_checkroi
+                            },
+                            "Mars_Android_Skill_Choose_Success": {
+                                "roi": target_skill_checkroi
+                            },
                         },
                     )
                     self.is_android_skill_enabled = True
@@ -172,22 +218,31 @@ class Mars101(CustomAction):
             "Fight_OpenedDoor", context.tasker.controller.post_screencap().wait().get()
         ):
             context.run_task("Fight_OpenedDoor")
-
         else:
-
             for _ in range(3):
                 fightUtils.cast_magic_special("生命颂歌", context)
             actions = []
-            if self.layers <= 70:
+            if self.layers <= 60:
                 actions = [
                     lambda: fightUtils.cast_magic("光", "祝福术", context),
                     lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
                     lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
                     lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
                 ]
-            elif self.layers >= 80 and self.layers <= 100:
+            elif self.layers >= 70 and self.layers <= 90:
                 actions = [
                     lambda: fightUtils.cast_magic("光", "祝福术", context),
+                    lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
+                    lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
+                    lambda: fightUtils.cast_magic("水", "冰锥术", context),
+                    lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
+                    lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
+                ]
+            elif self.layers >= 100 and self.layers <= 120:
+                actions = [
+                    lambda: fightUtils.cast_magic("气", "静电场", context),
+                    lambda: fightUtils.cast_magic("光", "祝福术", context),
+                    lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
                     lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
                     lambda: fightUtils.cast_magic("水", "冰锥术", context),
                     lambda: context.tasker.controller.post_click(boss_x, boss_y).wait(),
@@ -211,23 +266,44 @@ class Mars101(CustomAction):
 
             # 捡东西
             time.sleep(1)
-            self.handle_MarsReward_event(context)
-            if self.isShutDownTitan == False and self.layers > 80:
+            self.handle_MarsReward_event(
+                context, context.tasker.controller.post_screencap().wait().get()
+            )
+            if self.isGetTitanFoot == False and self.layers >= 80:
                 if fightUtils.cast_magic_special("泰坦之足", context):
-                    self.isShutDownTitan = True
+                    self.isGetTitanFoot = True
+                    # 关闭泰坦
             context.run_task("Fight_OpenedDoor")
         return True
 
     def handle_EarthGate_event(self, context: Context):
+        """
+        大地成功返回True,否则返回False
+        """
         if (
-            self.layers == 67 or self.layers == 68 or self.layers == 95
+            ((self.layers > 50) and (self.layers % 10 == 9))
+            # 如果59遇到拉绳子无法大地，那么尝试在61或者62大地
+            or (61 <= self.layers <= 62)
         ) and self.useEarthGate < 2:
-            if fightUtils.cast_magic("土", "大地之门", context):
-                self.useEarthGate += 1
-            elif self.layers == 71:
-                self.useEarthGate = 2
-            self.handle_clearCurLayer_event(context)
-            # 是否检查大地成功
+            # 识别释放大地时没有拉绳子的洞
+            if context.run_recognition(
+                "FindKeyHole", context.tasker.controller.post_screencap().wait().get()
+            ):
+                logger.info("当前层无法释放大地，跳过")
+                return False
+            if fightUtils.check_magic("土", "大地之门", context):
+                fightUtils.cast_magic("气", "静电场", context)
+                if fightUtils.cast_magic("土", "大地之门", context):
+                    self.useEarthGate += 1
+                    templayer = self.layers
+                    for _ in range(10):
+                        logger.info(f"等待大地之门特效结束")
+                        self.Check_CurrentLayers(context)
+                        if self.layers != templayer and self.layers != -1:
+                            logger.info(f"大地之门特效结束, 当前层数为{self.layers}")
+                            return True
+                        time.sleep(1)
+        return False
 
     def handle_preLayers_event(self, context: Context):
         self.handle_android_skill_event(context)
@@ -247,44 +323,60 @@ class Mars101(CustomAction):
                 context.tasker.controller.post_screencap().wait().get(),
             ):
                 pass
+        else:
+            context.run_task("Mars_Fight_ClearCurrentLayer")
+            time.sleep(1)
+            if context.run_recognition(
+                "Fight_Perfect", context.tasker.controller.post_screencap().wait().get()
+            ):
+                logger.info(f"第{self.layers} 完美击败")
+                while context.run_recognition(
+                    "Fight_Perfect",
+                    context.tasker.controller.post_screencap().wait().get(),
+                ):
+                    pass
+        return True
 
     def handle_before_leave_maze_event(self, context: Context):
-        logger.info("准备结算离开迷宫")
+        logger.info("触发Mars结算事件")
         context.run_task("Fight_ReturnMainWindow")
         for _ in range(3):
             fightUtils.cast_magic_special("生命颂歌", context)
 
-        context.run_task("Mars_GotoSpecialLayer")
-        while not context.run_recognition(
-            "Fight_OpenedDoor", context.tasker.controller.post_screencap().wait().get()
-        ):
-            time.sleep(1)
+        self.gotoSpecialLayer(context)
         context.run_task("Fight_ReturnMainWindow")
         OpenDetail = context.run_task("Bag_Open")
         if OpenDetail:
+            time.sleep(1)
             fightUtils.findItem("电能试剂", True, context)
         time.sleep(1)
 
-        context.tasker.controller.post_click(635, 928).wait()
+        self.leaveSpecialLayer(context)
         context.run_task("Fight_ReturnMainWindow")
         for _ in range(3):
             fightUtils.cast_magic_special("生命颂歌", context)
-
-        context.run_task("Mars_GotoSpecialLayer")
-        while not context.run_recognition(
-            "Fight_OpenedDoor", context.tasker.controller.post_screencap().wait().get()
-        ):
-            time.sleep(1)
+        self.gotoSpecialLayer(context)
         context.run_task("Fight_ReturnMainWindow")
         OpenDetail = context.run_task("Bag_Open")
         if OpenDetail:
+            time.sleep(1)
             fightUtils.findItem("能量电池", True, context)
         time.sleep(1)
 
-        context.tasker.controller.post_click(635, 928).wait()
+        self.leaveSpecialLayer(context)
         context.run_task("Fight_ReturnMainWindow")
         for _ in range(3):
             fightUtils.cast_magic_special("生命颂歌", context)
+
+        if fightUtils.title_check("巨龙", context):
+            fightUtils.title_learn("巨龙", 1, "亚龙血统", 3, context)
+            fightUtils.title_learn("巨龙", 2, "初级龙族血统", 3, context)
+            fightUtils.title_learn("巨龙", 3, "中级龙族血统", 3, context)
+            fightUtils.title_learn("巨龙", 4, "高级龙族血统", 3, context)
+            fightUtils.title_learn("巨龙", 5, "邪龙血统", 1, context)
+            fightUtils.title_learn_branch("巨龙", 5, "生命强化", 3, context)
+            fightUtils.title_learn_branch("巨龙", 5, "攻击强化", 3, context)
+        context.run_task("Fight_ReturnMainWindow")
 
         fightUtils.title_learn("战斗", 5, "剑圣", 1, context)
         context.run_task("Fight_ReturnMainWindow")
@@ -295,101 +387,226 @@ class Mars101(CustomAction):
         context.run_task("Fight_ReturnMainWindow")
         OpenDetail = context.run_task("Bag_Open")
         if OpenDetail:
+            time.sleep(1)
             for _ in range(2):
                 if fightUtils.findItem("武器大师执照", True, context, threshold=0.8):
                     break
 
         logger.info("可以出图了")
+        self.isLeaveMaze = True
         # 到这可以出图了
 
-    def handle_downstair_event(self, context: Context):
-        recoDetail = context.run_task("Fight_OpenedDoor")
-        if not recoDetail.nodes and context.run_recognition(
-            "FindKeyHole", context.tasker.controller.post_screencap().wait().get()
-        ):
-            logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
-            fightUtils.send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
-
-            while not context.run_recognition(
-                "Fight_OpenedDoor",
+    @timing_decorator
+    def handle_MarsExchangeShop_event(self, context: Context, image):
+        # 大于10层才处理交换商店事件
+        if self.layers > 10 and context.run_recognition("Mars_Exchange_Shop", image):
+            logger.info("触发Mars交换战利品事件")
+            context.run_task("Mars_Exchange_Shop")
+            if context.run_recognition(
+                "Mars_Exchange_Shop_Check",
                 context.tasker.controller.post_screencap().wait().get(),
             ):
-                time.sleep(3)
+                logger.info("交换商店出现了短剑")
+                if context.run_recognition(
+                    "Mars_Exchange_Shop_Add",
+                    context.tasker.controller.post_screencap().wait().get(),
+                ):
+                    for _ in range(5):
+                        context.run_task("Mars_Exchange_Shop_Add")
+                        if context.run_recognition(
+                            "Mars_Exchange_Shop_Add_Equipment_Select",
+                            context.tasker.controller.post_screencap().wait().get(),
+                        ):
+                            context.run_task("Mars_Exchange_Shop_Add_Equipment_Select")
+                        else:
+                            logger.info("没有短剑，法杖和盾牌之外的装备了,跳过这次交换")
+                            break
 
-            logger.info("冒险者大人已找到钥匙捏，继续探索")
-            context.run_task("Fight_OpenedDoor")
+                        if AddButtonRecoDetail := context.run_recognition(
+                            "Mars_Exchange_Shop_AddButtonReco",
+                            context.tasker.controller.post_screencap().wait().get(),
+                        ):
+                            box = AddButtonRecoDetail.best_result.box
+                            for _ in range(10):
+                                context.tasker.controller.post_click(
+                                    box[0] + box[2] // 2,
+                                    box[1] + box[3] // 2,
+                                ).wait()
+                                time.sleep(0.05)
+                        else:
+                            logger.warning(
+                                "一般不会到这里,进入这里说明由于未知原因离开交换商店了。"
+                            )
+                        context.run_task("Mars_Exchange_Shop_Confirm_Exchange")
 
-    def handle_MarsRuinsShop_event(self, context: Context):
-        image = context.tasker.controller.post_screencap().wait().get()
+                        # 如果交换完已经在桌面了，说明10个短剑都交换完了
+                        if context.run_recognition(
+                            "Fight_MainWindow",
+                            context.tasker.controller.post_screencap().wait().get(),
+                        ):
+                            logger.info("已经交换了十把短剑~")
+                            break
+                        else:
+                            logger.info("可用于更换的战利品没有了, 去获取更多吧~")
+            else:
+                logger.info("这个交换商店没有短剑, 去其他楼层找吧~")
+            context.run_task("Fight_ReturnMainWindow")
+            return True
+
+    @timing_decorator
+    def handle_MarsRuinsShop_event(self, context: Context, image):
         if context.run_recognition("Mars_RuinsShop", image):
+            logger.info("触发Mars商店事件")
             context.run_task("Mars_RuinsShop")
+            return True
+        return False
 
-    def handle_MarsReward_event(self, context: Context):
-        if self.layers % 2 == 1 or context.run_recognition(
-            "Mars_Reward", context.tasker.controller.post_screencap().wait().get()
-        ):
-            context.run_task("Mars_Reward")
+    @timing_decorator
+    def handle_MarsReward_event(self, context: Context, image):
+        normalReward = self.layers % 2 == 1
+        bossReward = self.layers >= 30 and self.layers % 10 == 0
+        if not (normalReward or bossReward):
+            return True
+
+        if normalReward and context.run_recognition("Mars_Reward", image):
+            logger.info("触发Mars奖励事件")
+            mars_reward_detail = context.run_task("Mars_Reward")
+            if mars_reward_detail.nodes:
+                for node in mars_reward_detail.nodes:
+                    if node.name == "Mars_Inter_Confirm_Fail":
+                        logger.info("领取Mars奖励失败, 需要重新清理当前层")
+                        return False
+            return True
+
+        if bossReward and context.run_recognition("Mars_BossReward", image):
+            logger.info("触发MarsBoss奖励事件")
+            context.run_task("Mars_BossReward")
+            return True
+        return True
+
+    @timing_decorator
+    def handle_MarsBody_event(self, context: Context, image):
+        # 摸金事件卡返回基本只会发生在夹层中
+        if bodyRecoDetail := context.run_recognition("Mars_Body", image):
+            logger.info("触发Mars摸金事件")
+            for body in bodyRecoDetail.filterd_results:
+                box = body.box
+                context.tasker.controller.post_click(
+                    box[0] + box[2] // 2,
+                    box[1] + box[3] // 2,
+                ).wait()
+                time.sleep(1)
+                if context.run_recognition(
+                    "Mars_Inter_Confirm_Success",
+                    context.tasker.controller.post_screencap().wait().get(),
+                ):
+                    context.run_task("Mars_Inter_Confirm_Success")
+                else:
+                    logger.info("可能在夹层中有怪物没有清理")
+                    context.run_task("Mars_Inter_Confirm_Fail")
+                    return False
+            return True
+        return True
+
+    @timing_decorator
+    def handle_MarsStele_event(self, context: Context, image):
+        if context.run_recognition("Mars_Stele", image):
+            logger.info("触发Mars斩断事件")
+            context.run_task("Mars_Stele")
+            context.run_task("Mars_Fight_ClearCurrentLayer")
+            time.sleep(1)
+            return True
+        return False
+
+    @timing_decorator
+    def handle_MarsStatue_event(self, context: Context, image):
+        if self.layers < 10:
+            return False
+        if context.run_recognition("Mars_Statue", image):
+            logger.info(f"触发Mars白胡子老头事件, 献祭一下战利品吧~")
+            if self.useEarthGate and self.layers < 80:
+                # 说明大地回来了，可以开始献祭至高战利品了
+                logger.info(f"大地已回来，可以开始献祭至高战利品了")
+                context.run_task(
+                    "Mars_Statue",
+                    pipeline_override={"Mars_Statue_Open_Next2": {"enabled": True}},
+                )
+            else:
+                context.run_task(
+                    "Mars_Statue",
+                    pipeline_override={"Mars_Statue_Open_Next2": {"enabled": False}},
+                )
+            if self.isGetTitanFoot == False and self.layers > 80:
+                if fightUtils.cast_magic_special("泰坦之足", context):
+                    self.isGetTitanFoot = True
+                    # 关闭泰坦
+            return True
+        return False
+
+    @timing_decorator
+    def handle_SpecialLayer_event(self, context: Context, image):
+        # 不放柱子，80层之后不打裸男
         if (
-            self.layers >= 30
-            and self.layers % 10 == 0
+            (30 <= self.layers + 1 <= 100)
+            and ((self.layers + 1) % 10 == 0)
             and context.run_recognition(
-                "Mars_BossReward",
-                context.tasker.controller.post_screencap().wait().get(),
+                "Mars_GotoSpecialLayer",
+                image,
             )
         ):
-            context.run_task("Mars_BossReward")
+            logger.info("触发Mars休息室事件")
+            if not self.gotoSpecialLayer(context):
+                return False
+            context.run_task("Mars_Shower")
+            context.run_task("Mars_EatBread")
+            # 泡完澡，吃完面包，开始打裸男
+            if self.layers <= 79:
+                fightUtils.cast_magic("暗", "死亡波纹", context)
+                fightUtils.cast_magic("光", "祝福术", context)
+                self.handle_clearCurLayer_event(context)
+            context.run_task("Fight_ReturnMainWindow")
+            self.leaveSpecialLayer(context)
 
-    def handle_MarsBody_event(self, context: Context):
-        while context.run_recognition(
-            "Mars_Body", context.tasker.controller.post_screencap().wait().get()
-        ):
-            context.run_task("Mars_Body")
-
-    def handle_MarsStele_event(self, context: Context):
-        if context.run_recognition(
-            "Mars_Stele", context.tasker.controller.post_screencap().wait().get()
-        ):
-            context.run_task("Mars_Stele")
-            time.sleep(1)
-
-    def handle_MarsStatue_event(self, context: Context):
-        if self.layers >= 10 and context.run_recognition(
-            "Mars_Statue", context.tasker.controller.post_screencap().wait().get()
-        ):
-            context.run_task("Mars_Statue")
-            if self.isShutDownTitan == False and self.layers > 80:
-                if fightUtils.cast_magic_special("泰坦之足", context):
-                    self.isShutDownTitan = True
+            return True
+        return True
 
     def handle_postLayers_event(self, context: Context):
-        time.sleep(1)
+        time.sleep(2)
         self.handle_perfect_event(context)
+        fightUtils.handle_dragon_event("马尔斯", context)
         self.Check_DefaultStatus(context)
-        self.handle_MarsBody_event(context)
-        self.handle_MarsStele_event(context)
-        self.handle_MarsRuinsShop_event(context)
-        self.handle_MarsStatue_event(context)
-        self.handle_MarsReward_event(context)
-        self.handle_EarthGate_event(context)
-        if self.layers == 99:
+
+        image = context.tasker.controller.post_screencap().wait().get()
+        self.handle_MarsBody_event(context, image)
+        self.handle_MarsStele_event(context, image)
+        self.handle_MarsStatue_event(context, image)
+        self.handle_MarsRuinsShop_event(context, image)
+        self.handle_MarsReward_event(context, image)
+        self.handle_MarsExchangeShop_event(context, image)
+        if not self.handle_SpecialLayer_event(context, image):
+            # 如果卡剧情(离开),则返回False, 重新清理该层
+            return False
+        if self.handle_EarthGate_event(context):
+            # 大地成功,需要回到战前准备开始请层，大地失败则继续往下走
+            return False
+        if self.layers >= self.target_leave_layer_para - 2 and context.run_recognition(
+            "Mars_GotoSpecialLayer",
+            context.tasker.controller.post_screencap().wait().get(),
+        ):
             self.handle_before_leave_maze_event(context)
         else:
-            self.handle_downstair_event(context)
+            logger.info("触发下楼事件")
+            fightUtils.handle_downstair_event(context)
+        return True
 
+    @timing_decorator
     def handle_clearCurLayer_event(self, context: Context):
         # boss层开始探索
         if self.layers >= 30 and self.layers % 10 == 0:
             # boss召唤动作
             time.sleep(6)
             self.handle_boss_event(context)
-            # 检测神龙
-            time.sleep(1)
-            img = context.tasker.controller.post_screencap().wait().get()
-            if context.run_recognition("Fight_FindDragon", img):
-                logger.info("是神龙,俺,俺们有救了！！！")
-                fightUtils.dragonwish("工资", context)
-                logger.info("神龙带肥家lo~")
-
+            fightUtils.handle_dragon_event("马尔斯", context)
             return False
         # 小怪层探索
         else:
@@ -397,15 +614,23 @@ class Mars101(CustomAction):
 
         return True
 
+    @timing_decorator
     def handle_interrupt_event(self, context: Context):
-        # 检测卡剧情
         image = context.tasker.controller.post_screencap().wait().get()
         if context.run_recognition(
-            "JJC_Inter_Confirm",
+            "Mars_Inter_Confirm_Success",
             image,
         ):
             logger.info("检测到卡剧情, 本层重新探索")
-            context.run_task("JJC_Inter_Confirm")
+            context.run_task("Mars_Inter_Confirm_Success")
+            return False
+
+        if context.run_recognition(
+            "Mars_Inter_Confirm_Fail",
+            image,
+        ):
+            logger.info("检测到卡离开, 本层重新探索")
+            context.run_task("Mars_Inter_Confirm_Fail")
             return False
 
         # 检测卡返回
@@ -416,37 +641,70 @@ class Mars101(CustomAction):
 
         return True
 
+    def gotoSpecialLayer(self, context: Context):
+        context.run_task("Fight_ReturnMainWindow")
+        if context.run_recognition(
+            "Mars_GotoSpecialLayer",
+            context.tasker.controller.post_screencap().wait().get(),
+        ):
+
+            mars_gotoSpecialLayer_detail = context.run_task("Mars_GotoSpecialLayer")
+            if mars_gotoSpecialLayer_detail.nodes:
+                for node in mars_gotoSpecialLayer_detail.nodes:
+                    if node.name == "Mars_Inter_Confirm_Fail":
+                        logger.info("进入休息室失败, 需要重新清理当前层")
+                        return False
+            while not context.run_recognition(
+                "Mars_LeaveSpecialLayer",
+                context.tasker.controller.post_screencap().wait().get(),
+            ):
+                time.sleep(1)
+            logger.info("进入休息室")
+            return True
+        return True
+
+    def leaveSpecialLayer(self, context: Context):
+        context.run_task("Fight_ReturnMainWindow")
+        if context.run_recognition(
+            "Mars_LeaveSpecialLayer",
+            context.tasker.controller.post_screencap().wait().get(),
+        ):
+
+            context.run_task("Mars_LeaveSpecialLayer")
+            while not context.run_recognition(
+                "Mars_GotoSpecialLayer",
+                context.tasker.controller.post_screencap().wait().get(),
+            ):
+                time.sleep(1)
+            logger.info("离开休息室")
+            return True
+        return False
+
     # 执行函数
     def run(
         self,
         context: Context,
         argv: CustomAction.RunArg,
     ) -> CustomAction.RunResult:
+        self.target_leave_layer_para = int(
+            context.get_node_data("Mars_Target_Layer_Setting")["recognition"]["param"][
+                "expected"
+            ][0]
+        )
 
         # initialize
         self.initialize(context)
+        logger.info(f"本次任务目标层数: {self.target_leave_layer_para}")
 
-        while self.layers <= 101:
+        while self.layers <= 120:
             # 检查是否停止任务
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
                 return CustomAction.RunResult(success=False)
 
             # 检查当前层数, 确保不是0层
-            context.run_task("Fight_ReturnMainWindow")
-            tempLayers = -1
-            while tempLayers <= 0 and (
-                RunResult := context.run_recognition(
-                    "Fight_CheckLayer",
-                    context.tasker.controller.post_screencap().wait().get(),
-                )
-            ):
-                tempLayers = fightUtils.extract_num_layer(RunResult.best_result.text)
-                if context.tasker.stopping:
-                    logger.info("检测到停止任务, 开始退出agent")
-                    return CustomAction.RunResult(success=False)
-
-            self.layers = tempLayers
+            if not self.Check_CurrentLayers(context):
+                return CustomAction.RunResult(success=False)
             logger.info(f"Start Explore {self.layers} layer.")
 
             # 检测是否触发战前事件
@@ -460,16 +718,22 @@ class Mars101(CustomAction):
             if not self.handle_interrupt_event(context):
                 continue
 
-            # 检查是否触发战后事件
-            self.handle_postLayers_event(context)
-
-            if self.layers == 99:
-                logger.info(f"current layers {self.layers}, 开始退出agent")
+            # 检查是否触发战后事件, 战后事件是否出现异常
+            if not self.handle_postLayers_event(context):
+                continue
+            if self.isLeaveMaze:
+                logger.info(f"current layers {self.layers},出图准备完成,开始退出agent")
                 break
 
         logger.info(f"马尔斯探索结束，当前到达{self.layers}层")
 
         context.run_task("Fight_LeaveMaze")
+        # 获取并打印统计信息
+        stats = fightUtils.get_time_statistics()
+        for func_name, data in stats.items():
+            logger.info(
+                f"{func_name} 执行 {data['count']} 次，总耗时: {data['total_time']:.4f}秒"
+            )
         return CustomAction.RunResult(success=True)
 
 
@@ -482,6 +746,7 @@ class Mars_Fight_ClearCurrentLayer(CustomAction):
         # 进行特殊配置以适应Mars
         self.fightProcessor.grid_count = 40
         self.fightProcessor.hit_monster_count = 3
+        self.fightProcessor.targetWish = "马尔斯"
 
     # 执行函数
     def run(

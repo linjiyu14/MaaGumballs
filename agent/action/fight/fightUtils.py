@@ -5,6 +5,7 @@ from plyer import notification
 import math
 import re
 import time
+from functools import wraps
 
 # 神龙许愿ROI [77,465,570,553]
 # 神龙许愿list = ["我要获得钻石", "我要神奇的果实", "我要更多的伙伴", "我要获得巨龙之力", "我要学习龙语魔法", "我要变得更强", "我要变得富有", "我要最凶残的装备", "我要更多的伙伴", "我要大量的矿石", "我要你的收藏品", "我要您的碎片"]
@@ -124,6 +125,43 @@ def cast_magic(Type: str, MagicName: str, context: Context, TargetPos: tuple = (
     return True
 
 
+def check_magic(Type: str, MagicName: str, context: Context):
+    """施放指定类型的魔法
+
+    Args:
+        Type: 魔法的类型，如 '火', '土', '气' 等
+        MagicName: 具体的魔法名称，如 '祝福术', '石肤术' 等
+        context: 游戏上下文对象，包含当前状态信息
+
+    Returns:
+        执行结果，存在返回 True, 失败返回 False
+
+    Example:
+        >>> cast_magic("火", "火球术", context)
+        True
+    """
+
+    # run
+    context.run_task(
+        "Fight_Magic_Elemental",
+        pipeline_override={"Fight_Magic_Elemental": {"next": [MagicType[Type]]}},
+    )
+
+    image = context.tasker.controller.post_screencap().wait().get()
+    if context.run_recognition(
+        "Fight_Magic_Cast",
+        image,
+        pipeline_override={"Fight_Magic_Cast": {"expected": MagicName}},
+    ):
+        logger.info(f"找到了魔法:{MagicName}")
+        context.run_task("BackText")
+    else:
+        logger.info(f"没有找到对应的魔法:{MagicName}")
+        context.run_task("BackText")
+        return False
+    return True
+
+
 def cast_magic_special(MagicName: str, context: Context):
     """施放特殊类型的魔法
 
@@ -156,6 +194,46 @@ def cast_magic_special(MagicName: str, context: Context):
                 pipeline_override={"Fight_Magic_Special_Cast": {"expected": MagicName}},
             )
             logger.info(f"施放魔法:{MagicName}")
+            return True
+        else:
+            x, y = magic_special_type[count]
+            context.tasker.controller.post_click(x, y).wait()
+            time.sleep(1)
+        count += 1
+    logger.info(f"没有找到对应的魔法:{MagicName}")
+    context.run_task("BackText")
+    return False
+
+
+def check_magic_special(MagicName: str, context: Context):
+    """确认特殊类型的魔法是否存在
+
+    Args:
+        MagicName: 具体的魔法名称，如 '天眼', '大闹天宫' 等
+        context: 游戏上下文对象，包含当前状态信息
+
+    Returns:
+        执行结果，成功返回 True, 失败返回 False
+
+    Example:
+        >>> cast_magic_special("天眼", context)
+        True
+    """
+
+    # run
+    magic_special_type = [(632, 328), (632, 430), (632, 539)]
+    context.run_task("Fight_Magic_Special")
+    # 多尝试几页，来适配更多类型特殊魔法
+    count = 0
+    while count < 3:
+        image = context.tasker.controller.post_screencap().wait().get()
+        if context.run_recognition(
+            "Fight_Magic_Special_Cast",
+            image,
+            pipeline_override={"Fight_Magic_Special_Cast": {"expected": MagicName}},
+        ):
+            logger.info(f"找到了魔法:{MagicName}")
+            context.run_task("BackText")
             return True
         else:
             x, y = magic_special_type[count]
@@ -640,19 +718,19 @@ def dragonwish(targetWish: str, context: Context):
             "我要更多的伙伴",
             "我要神奇的果实",
         ]
-    elif targetWish == "神锻":
+    elif targetWish == "马尔斯":
         wishlist = [
+            "我要获得钻石",
+            "我要变得富有",
             "我想获得巨龙之力",
+            "我需要您的碎片",
+            "我要更多的伙伴",
+            "我要最凶残的装备",
+            "我要你的收藏品",
+            "我要大量的矿石",
             "我想学习龙语魔法",
             "我要变得更强",
             "我要神奇的果实",
-            "我要获得钻石",
-            "我要最凶残的装备",
-            "我要你的收藏品",
-            "我要变得富有",
-            "我需要您的碎片",
-            "我要更多的伙伴",
-            "我要大量的矿石",
         ]
     elif targetWish == "测试":
         wishlist = [
@@ -669,7 +747,7 @@ def dragonwish(targetWish: str, context: Context):
             "我想获得巨龙之力",
         ]
     else:
-        logger.error("请输入[工资, 神锻, 测试]中的一个")
+        logger.error("请输入[工资, 马尔斯, 测试]中的一个")
     # 神龙许愿list = ["我要获得钻石", "我要神奇的果实", "我想获得巨龙之力", "我要学习龙语魔法", "我要变得更强","我要最凶残的装备", "我要变得富有", "我要大量的矿石", "我要你的收藏品", "我要您的碎片", "我要更多的伙伴"]
 
     # # 等待8秒，确保界面加载完毕，可以考虑移除
@@ -692,7 +770,7 @@ def dragonwish(targetWish: str, context: Context):
             )
             time.sleep(1)
             context.tasker.controller.post_click(center_x, center_y).wait()
-            time.sleep(2)
+        time.sleep(3)
 
         logger.info(f"已点击愿望: {min_index_wish}")
         status = True
@@ -704,7 +782,7 @@ def dragonwish(targetWish: str, context: Context):
                 pipeline_override={
                     "TextReco": {
                         "recognition": "OCR",
-                        "expected": "神龙",
+                        "expected": ["神龙", "冈布奥"],
                         "roi": [21, 217, 682, 762],
                         "action": "DoNothing",
                     },
@@ -731,7 +809,7 @@ def dragonwish(targetWish: str, context: Context):
         elif min_index_wish in ["我要变得富有"]:
             # 等待地图加载
             time.sleep(10)
-
+            cast_magic("火", "末日审判", context)
             for _ in range(3):
                 if not cast_magic("暗", "死亡波纹", context):
                     if not cast_magic("土", "地刺术", context, (350, 400)):
@@ -947,3 +1025,66 @@ def Saveyourlife(context: Context):
     else:
         logger.info("没有检测到冈布奥倒下！可能没死吧！！继续战斗！！")
     return True
+
+
+def handle_dragon_event(map_str: str, context: Context):
+    # 检测神龙
+    img = context.tasker.controller.post_screencap().wait().get()
+    if context.run_recognition("Fight_FindDragon", img):
+        logger.info("是神龙,俺,俺们有救了！！！")
+        dragonwish(map_str, context)
+        logger.info("神龙带肥家lo~")
+
+
+def handle_downstair_event(context: Context):
+    recoDetail = context.run_task("Fight_OpenedDoor")
+    if not recoDetail.nodes and context.run_recognition(
+        "FindKeyHole", context.tasker.controller.post_screencap().wait().get()
+    ):
+        logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
+        send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
+
+        while not context.run_recognition(
+            "Fight_OpenedDoor",
+            context.tasker.controller.post_screencap().wait().get(),
+        ):
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return False
+            time.sleep(3)
+
+        logger.info("冒险者大人已找到钥匙捏，继续探索")
+        context.run_task("Fight_OpenedDoor")
+    return True
+
+
+# 存储函数执行时间的全局变量
+function_time_records = {}
+
+
+def timing_decorator(func):
+    """装饰器：记录函数执行时间并累积总时长"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        func_name = func.__name__
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        duration = time.perf_counter() - start_time
+
+        # 更新函数执行时间记录
+        if func_name in function_time_records:
+            function_time_records[func_name]["count"] += 1
+            function_time_records[func_name]["total_time"] += duration
+        else:
+            function_time_records[func_name] = {"count": 1, "total_time": duration}
+
+        return result
+
+    return wrapper
+
+
+# 获取统计信息的函数
+def get_time_statistics():
+    """返回所有函数的执行时间统计信息"""
+    return function_time_records

@@ -36,6 +36,7 @@ class FightProcessor:
             self.max_monster_loop_fail = 5
             self.max_grid_loop_fail = 3
             self.isCheckDragon = False
+            self.targetWish = "工资"
 
             # 初始化逻辑
             roi_list = self.generate_floor_roi_grid()
@@ -276,7 +277,7 @@ class FightProcessor:
                     if self.is_roi_mostly_overlapping(
                         recoDetail.box, self.roi_matrix[r][c]
                     ):
-                        logger.info(f"识别到 ClosedDoor 位于 {r+1},{c+1}")
+                        # logger.info(f"识别到 ClosedDoor 位于 {r+1},{c+1}")
                         return r, c
         return 0, 0
 
@@ -289,7 +290,7 @@ class FightProcessor:
                     if self.is_roi_mostly_overlapping(
                         recoDetail.box, self.roi_matrix[r][c]
                     ):
-                        logger.info(f"识别到 OpenedDoor 位于 {r+1},{c+1}")
+                        # logger.info(f"识别到 OpenedDoor 位于 {r+1},{c+1}")
                         return r, c
         return 0, 0
 
@@ -344,7 +345,7 @@ class FightProcessor:
         """处理遇到神龙的逻辑"""
         if self.isCheckDragon and context.run_recognition("Fight_FindDragon", img):
             logger.info("是神龙,俺,俺们有救了！！！")
-            fightUtils.dragonwish("工资", context)
+            fightUtils.dragonwish(self.targetWish, context)
             logger.info("神龙带肥家lo~")
             return True
         return False
@@ -385,7 +386,7 @@ class FightProcessor:
                 fail_check_monster_cnt >= self.max_monster_loop_fail
                 or fail_check_grid_cnt >= self.max_grid_loop_fail
             ):
-                logger.info("找不到怪物或格子, 检测下一层的门")
-                break
 
+                break
+        logger.info("已完成清理当前层~")
         return True

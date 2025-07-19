@@ -43,24 +43,17 @@
     },
     "Fight_DownStaris_Loading": {
         "recognition": "OCR",
+        "roi": [
+            150,
+            397,
+            411,
+            461
+        ],
         "expected": [
             "加载中"
         ],
-        "post_delay": 750,
-        "timeout": 1000
-    },
-    "Fight_DownStaris": {
-        "recognition": "DirectHit",
-        "post_delay": 300,
-        "timeout": 1000,
-        "next": [
-            "Fight_OpenedDoor"
-        ],
-        "interrupt": [
-            "Fight_OpenRewardBox",
-            "BackText",
-            "Fight_CheckOpenedDoor"
-        ]
+        "post_delay": 1000,
+        "timeout": 2000
     },
     "Fight_LeaveMaze": {
         "next": [
@@ -460,10 +453,10 @@
         "template": "fight/buff/毁灭之刃.png",
         "doc": "默认检测毁灭之刃",
         "roi": [
-            1,
-            89,
-            315,
-            108
+            4,
+            50,
+            334,
+            227
         ],
         "action": "DoNothing",
         "post_delay": 200,
@@ -602,7 +595,7 @@
     "Fight_CheckDragonBall": {
         "recognition": "TemplateMatch",
         "template": [
-            "fight\\UniversalUI\\DragonBall_6.png"
+            "fight/UniversalUI/DragonBall_6.png"
         ],
         "roi": [
             262,
