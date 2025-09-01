@@ -293,5 +293,27 @@
     "CountTask_RunNode": {
         "doc": "这是count的辅助节点，搭配count action使用",
         "next": "Activity_Start"
+    },
+    "Zdjl_Start":{
+        "recognition":"TemplateMatch",
+        "template":"utils/ZdjlStart.png",
+        "action":"Click",
+        "roi":[
+            439,985,122,100
+        ],
+        "interrupt":["Zdjl_Start"],
+        "post_delay":1000,
+        "timeout":5000
+    },
+    "Zdjl_Stop":{
+        "recognition":"TemplateMatch",
+        "template":"utils/ZdjlStop.png",
+        "action":"Click",
+        "roi":[
+            626,995,73,68
+        ],
+        "interrupt":["Zdjl_Stop"],
+        "post_delay":1000,
+        "timeout":5000
     }
 }
