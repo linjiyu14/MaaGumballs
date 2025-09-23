@@ -34,7 +34,7 @@ class FightProcessor:
             self._hit_monster_count = 4
 
             self.max_grid_loop = 20
-            self.max_monster_loop_fail = 3
+            self.max_monster_loop_fail = 6
             self.max_grid_loop_fail = 3
             self.isCheckDragon = False
             self.targetWish = target_wish
