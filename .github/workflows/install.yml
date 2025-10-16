@@ -110,6 +110,12 @@ jobs:
         shell: bash
         run: |
           python tools/ci/setup_embed_python.py
+
+      - name: Download Python dependencies
+        shell: bash
+        run: |
+          ./install/python/python.exe tools/ci/download_deps.py --deps-dir install/deps
+
       - name: Install
         shell: bash
         run: |
@@ -166,6 +172,11 @@ jobs:
           ARCHIVE_FILE_PATH="${{ fromJson(steps.download_mfa.outputs.downloaded_files)[0] }}"
           rm -f "${ARCHIVE_FILE_PATH}"
           echo "Archive cleanup command executed for MFAAvalonia on Linux."
+      
+      - name: Download Python dependencies
+        shell: bash
+        run: |
+          python tools/ci/download_deps.py --deps-dir install/deps
 
       - name: Install on Linux
         shell: bash
@@ -235,6 +246,11 @@ jobs:
           else
             echo "Warning: Embedded Python executable not found at $EMBED_PYTHON_PATH. Skipping chmod."
           fi
+          
+      - name: Download Python dependencies
+        shell: bash
+        run: |
+          ./install/python/bin/python3 tools/ci/download_deps.py --deps-dir deps
 
       - name: Install on macOS
         shell: bash
