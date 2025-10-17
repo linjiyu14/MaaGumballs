@@ -4,7 +4,11 @@ import smtplib
 import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import requests
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
 import time
 import hmac
 import hashlib
@@ -106,6 +110,9 @@ def send_email(dp: dict, title: str, text: str) -> bool:
 
 # 通过pushplus发送消息，暂时没用上
 def send_byPushplus(dp: dict, title: str, text: str) -> bool:
+    if not REQUESTS_AVAILABLE:
+        logger.warning("requests模块不可用，无法使用pushplus发送消息")
+        return False
     token = dp.get("pushplus_token")
     if token == None or token == "":
         logger.info("未配置pushplus_token")
@@ -132,6 +139,9 @@ def send_byPushplus(dp: dict, title: str, text: str) -> bool:
 
 # 通过Qmsg发送消息
 def send_qmsg(dp: dict, title: str, text: str) -> bool:
+    if not REQUESTS_AVAILABLE:
+        logger.warning("requests模块不可用，无法使用Qmsg发送消息")
+        return False
     server = dp.get("ExternalNotificationQmsgServer")
     key = dp.get("ExternalNotificationQmsgKey")
     bot = dp.get("ExternalNotificationQmsgBot")
@@ -169,6 +179,7 @@ def send_qmsg(dp: dict, title: str, text: str) -> bool:
             return False
     else:
         logger.info("Qmsg配置不完整，请检查配置文件")
+        return False
 
 
 def dingTalk_sign(timestamp: str, secret: str) -> str:
@@ -200,12 +211,16 @@ def send_dingTalk(dp: dict, title: str, text: str) -> bool:
     Returns:
         发送成功返回True，否则返回False
     """
+    if not REQUESTS_AVAILABLE:
+        logger.warning("requests模块不可用，无法使用钉钉发送消息")
+        return False
 
     token = dp.get("ExternalNotificationDingTalkToken")
     secret = dp.get("ExternalNotificationDingTalkSecret")
 
     if not token:
         logger.error("钉钉配置不完整，请检查配置文件")
+        return False
     else:
         token = decrypt(token)
         url = f"https://oapi.dingtalk.com/robot/send?access_token={ token }"
@@ -231,6 +246,7 @@ def send_dingTalk(dp: dict, title: str, text: str) -> bool:
                 return False
         except Exception as e:
             logger.info(f"消息推送失败: { str(e) }")
+            return False
 
 
 def send_message(title: str, text: str) -> bool:
