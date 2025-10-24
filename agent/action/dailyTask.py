@@ -22,7 +22,7 @@ class DailyTask(CustomAction):
             "AlchemySignboard",  # 炼金招牌
             "SkyExplore",  # 天空探索
             "RuinsExplore",  # 遗迹探索
-            # "WeeklyRaid",
+            "WeeklyRaid",  # 每周周赛
         ]
 
         for key in custom_order:
@@ -42,6 +42,7 @@ class DailyTask(CustomAction):
             for i in range(3):
                 image = context.tasker.controller.post_screencap().wait().get()
                 if context.run_recognition(key, image):
+                    logger.info(f"第{i+1}轮检测到任务图标: {key}")
                     context.run_task(key)
                     IsCheck = True
                     break
@@ -88,15 +89,14 @@ class WeeklyRaidFighting(CustomAction):
                 "WeeklyRaid_MonsterCheck",
                 context.tasker.controller.post_screencap().wait().get(),
             ):
-                # 2.1 点开怪物
-                box = MonsterReco.best_result.box
-                center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
-                context.tasker.controller.post_click(center_x, center_y).wait()
-                time.sleep(1)
-
-                # 2.2 袭击怪物
-                context.run_task("WeeklyRaid_Attack")
-            else:
-                context.run_task("WeeklyRaid_SwipeToRight")
+                for item in MonsterReco.all_results:
+                    # 2.1 点开怪物
+                    box = item.box
+                    center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
+                    context.tasker.controller.post_click(center_x, center_y).wait()
+                    time.sleep(1)
+                    # 2.2 袭击怪物
+                    context.run_task("WeeklyRaid_Attack")
+            context.run_task("WeeklyRaid_SwipeToRight")
 
         return CustomAction.RunResult(success=True)

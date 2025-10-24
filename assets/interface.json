@@ -660,6 +660,27 @@
                 }
             ]
         },
+        "开启天空周副本": {
+            "default_case": "yes",
+            "cases": [
+                {
+                    "name": "no",
+                    "pipeline_override": {
+                        "WeeklyRaid": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "yes",
+                    "pipeline_override": {
+                        "WeeklyRaid": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
         "扫荡时使用钻石购买体力": {
             "default_case": "no",
             "cases": [

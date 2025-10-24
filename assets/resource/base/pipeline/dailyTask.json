@@ -872,13 +872,9 @@
         ]
     },
     "WeeklyRaid": {
-        "next": [
-            "WeeklyRaid_Start"
-        ]
-    },
-    "WeeklyRaid_Start": {
         "recognition": "TemplateMatch",
         "template": "dailyTask/WeeklyRaid.png",
+        "threshold": 0.8,
         "roi": [
             47,
             262,
@@ -922,6 +918,7 @@
             "dailyTask/weeklyRaid/永恒王座冈布奥6.png",
             "dailyTask/weeklyRaid/永恒王座冈布奥7.png"
         ],
+        "threshold": 0.85,
         "roi": [
             47,
             262,
@@ -1005,13 +1002,13 @@
         "action": "Swipe",
         "begin": [
             430,
-            676,
+            600,
             10,
             10
         ],
         "end": [
             344,
-            677,
+            600,
             10,
             10
         ],
