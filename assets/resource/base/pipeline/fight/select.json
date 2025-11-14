@@ -93,6 +93,7 @@
         "post_delay": 500,
         "timeout": 3000,
         "next": [
+            "Select_WorldTree_InputBox_Click",
             "Select_WorldTree_InputBox_Text"
         ]
     },

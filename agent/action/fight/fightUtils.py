@@ -989,6 +989,7 @@ def Auto_CallDog(context: Context):
             cast_magic("气", "静电场", context)
             cast_magic_special("天眼", context)
 
+        time.sleep(2)
         if not checkBuffStatus("毁灭之刃", context):
             # sl恢复现场, 叫狗失败
             logger.error(f"召唤狗子失败,可能是没触发毁灭,请到下一层叫狗.现在先保存状态")
