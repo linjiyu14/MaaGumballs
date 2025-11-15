@@ -244,7 +244,7 @@
             169
         ],
         "duration": 1000,
-        "post_delay": 1000
+        "post_delay": 1500
     },
     "MapSwipeUpToDown": {
         "recognition": "DirectHit",
