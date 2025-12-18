@@ -55,8 +55,8 @@ class TSD_explore(CustomAction):
                     "TSD_getPowerNumber": {"roi": fleetPowerRoiList[key]}
                 },
             )
-            if nums:
-                powerNumber = fightUtils.extract_num(nums.filterd_results[0].text)
+            if nums.hit:
+                powerNumber = fightUtils.extract_num(nums.filtered_results[0].text)
                 self.powerList[key] = powerNumber
             else:
                 self.powerList[key] = 0
@@ -86,8 +86,8 @@ class TSD_explore(CustomAction):
                 }
             },
         )
-        if fleetStatus and fleetStatus.filterd_results:
-            return len(fleetStatus.filterd_results)
+        if fleetStatus.hit:
+            return len(fleetStatus.filtered_results)
         else:
             return 0
 
@@ -104,7 +104,7 @@ class TSD_explore(CustomAction):
                         "TSD_checkFreeFleet": {"roi": self.fleetRoiList[key]}
                     },
                 )
-                if not status:
+                if not status.hit:
                     time.sleep(1)
                     logger.info(f"正在返回{key}舰队")
                     context.run_task(
@@ -162,10 +162,10 @@ class TSD_explore(CustomAction):
                 }
             },
         )
-        if exploreList and exploreList.filterd_results:
-            self.exploreNums = len(exploreList.filterd_results)
+        if exploreList.hit:
+            self.exploreNums = len(exploreList.filtered_results)
             self.check = False  # 存在目标，需要在运行到右下角时从左上角开始检查
-            return exploreList.filterd_results
+            return exploreList.filtered_results
         else:
             self.exploreNums = 0
             return []
@@ -225,7 +225,7 @@ class TSD_explore(CustomAction):
                 box[0] + box[2] // 2, box[1] + box[3] // 2
             )
             time.sleep(2)
-            if not self.checkClickTarget(context, ["调查","袭击"]):
+            if not self.checkClickTarget(context, ["调查", "袭击"]):
                 # 未点击到目标，证明因为地图移动导致目标位置变化，重新检查目标
                 logger.info("未点击到目标，重新检查目标")
                 return False
@@ -276,11 +276,11 @@ class TSD_explore(CustomAction):
                 }
             },
         )
-        if boundaryList and boundaryList.filterd_results:
+        if boundaryList.hit:
             return True
         return False
 
-    def checkClickTarget(self, context: Context, target:list) -> bool:
+    def checkClickTarget(self, context: Context, target: list) -> bool:
         targetList = context.run_recognition(
             "checkClickTarget",
             context.tasker.controller.post_screencap().wait().get(),
@@ -291,11 +291,12 @@ class TSD_explore(CustomAction):
                     "roi": [14, 283, 691, 756],
                     "threshold": 0.8,
                 }
-            }
+            },
         )
-        if targetList and targetList.filterd_results:  # 检测到目标
+        if targetList.hit:  # 检测到目标
             return True
         return False
+
     def swipeMapToLeftTop(self, context: Context):
         while True:  # 将地图移动至左上角
             if self.checkBoundary(context, "LeftTop"):
@@ -379,12 +380,12 @@ class TSD_explore(CustomAction):
                                 }
                             },
                         )
-                        if planetName and planetName.filterd_results:
+                        if planetName.hit:
                             logger.info(
-                                f"识别到星球名称: {planetName.filterd_results[0].text}, 已探索星球列表: {self.planetList}"
+                                f"识别到星球名称: {planetName.filtered_results[0].text}, 已探索星球列表: {self.planetList}"
                             )
                             self.GetTaskTargetList(context, "monster_planet", 0.82)
-                            if planetName.filterd_results[0].text in self.planetList:
+                            if planetName.filtered_results[0].text in self.planetList:
                                 if self.exploreNums == 0:
                                     logger.info(f"该星球已发现过且已无小怪，请继续探索")
                                     context.run_task("BackText")  # 返回地图并移动
@@ -396,9 +397,9 @@ class TSD_explore(CustomAction):
                                 if self.exploreNums == 0:
                                     logger.info(f"该星球已无小怪，请继续探索")
                                     context.run_task("BackText")  # 返回地图并移动
-                                    # 完成清理，记录星球名称 
+                                    # 完成清理，记录星球名称
                                     self.planetList.append(
-                                        planetName.filterd_results[0].text
+                                        planetName.filtered_results[0].text
                                     )
                                     self.swipeMap(context)
                                 else:
@@ -437,7 +438,7 @@ class TSD_explore(CustomAction):
                 }
             },
         )
-        if opened:
+        if opened.hit:
             context.run_task("TSD_closeUnionMsgBox")
             logger.info("关闭联盟聊天窗口")
         else:

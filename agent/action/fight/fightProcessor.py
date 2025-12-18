@@ -236,7 +236,7 @@ class FightProcessor:
                 }
             },
         ):
-            if recoDetail:
+            if recoDetail.hit:
                 valid_pixel_count = recoDetail.best_result.count
                 return valid_pixel_count if valid_pixel_count > count else 0
             return 0
@@ -354,7 +354,7 @@ class FightProcessor:
         if context.run_recognition(
             "Fight_CheckDragonBall",
             context.tasker.controller.post_screencap().wait().get(),
-        ):
+        ).hit:
             self.isCheckDragon = True
         else:
             self.isCheckDragon = False
@@ -460,7 +460,7 @@ class FightProcessor:
 
     def handle_dragon_encounter(self, context: Context, img):
         """处理遇到神龙的逻辑"""
-        if self.isCheckDragon and context.run_recognition("Fight_FindDragon", img):
+        if context.run_recognition("Fight_FindDragon", img).hit and self.isCheckDragon:
             logger.info("是神龙,俺,俺们有救了！！！")
             fightUtils.dragonwish(self.targetWish, context)
             logger.info("神龙带肥家lo~")
