@@ -94,34 +94,40 @@ def cast_magic(Type: str, MagicName: str, context: Context, TargetPos: tuple = (
     )
 
     image = context.tasker.controller.post_screencap().wait().get()
-    if context.run_recognition(
+    if result := context.run_recognition(
         "Fight_Magic_Cast",
         image,
         pipeline_override={"Fight_Magic_Cast": {"expected": MagicName}},
     ):
-        # 自身释放的魔法
-        if TargetPos == (0, 0):
-            context.run_task(
-                "Fight_Magic_Cast",
-                pipeline_override={
-                    "Fight_Magic_Cast": {
-                        "expected": MagicName,
-                        "next": "Fight_ClickMagic",
-                    }
-                },
-            )
-            logger.info(f"施放魔法:{MagicName}")
-        # 指定位置释放的魔法
+        if result.filtered_results:
+            # 自身释放的魔法
+            if TargetPos == (0, 0):
+                context.run_task(
+                    "Fight_Magic_Cast",
+                    pipeline_override={
+                        "Fight_Magic_Cast": {
+                            "expected": MagicName,
+                            "next": "Fight_ClickMagic",
+                        }
+                    },
+                )
+                logger.info(f"施放魔法:{MagicName}")
+            # 指定位置释放的魔法
+            else:
+                rect_x, rect_y = TargetPos[0] - 50, TargetPos[1] - 50
+                context.run_task(
+                    "Fight_Magic_Cast",
+                    pipeline_override={
+                        "Fight_Magic_Cast": {"expected": MagicName},
+                        "Fight_ClickMagic": {"target": [rect_x, rect_y, 100, 100]},
+                    },
+                )
+                logger.info(f"施放魔法:{MagicName}在{TargetPos}")
         else:
-            rect_x, rect_y = TargetPos[0] - 50, TargetPos[1] - 50
-            context.run_task(
-                "Fight_Magic_Cast",
-                pipeline_override={
-                    "Fight_Magic_Cast": {"expected": MagicName},
-                    "Fight_ClickMagic": {"target": [rect_x, rect_y, 100, 100]},
-                },
-            )
-            logger.info(f"施放魔法:{MagicName}在{TargetPos}")
+            logger.info(f"没有找到对应的魔法:{MagicName}")
+            context.run_task("BackText")
+            context.run_task("Fight_ReturnMainWindow")
+            return False
     else:
         logger.info(f"没有找到对应的魔法:{MagicName}")
         context.run_task("BackText")
@@ -157,13 +163,18 @@ def check_magic(Type: str, MagicName: str, context: Context):
     )
 
     image = context.tasker.controller.post_screencap().wait().get()
-    if context.run_recognition(
+    if result := context.run_recognition(
         "Fight_Magic_Cast",
         image,
         pipeline_override={"Fight_Magic_Cast": {"expected": MagicName}},
     ):
-        logger.info(f"找到了魔法:{MagicName}")
-        context.run_task("BackText")
+        if result.filtered_results:
+            logger.info(f"找到了魔法:{MagicName}")
+            context.run_task("BackText")
+        else:
+            logger.info(f"没有找到对应的魔法:{MagicName}")
+            context.run_task("BackText")
+            return False
     else:
         logger.info(f"没有找到对应的魔法:{MagicName}")
         context.run_task("BackText")
@@ -193,17 +204,25 @@ def cast_magic_special(MagicName: str, context: Context):
     count = 0
     while count <= 3:
         image = context.tasker.controller.post_screencap().wait().get()
-        if context.run_recognition(
+        if result := context.run_recognition(
             "Fight_Magic_Special_Cast",
             image,
             pipeline_override={"Fight_Magic_Special_Cast": {"expected": MagicName}},
         ):
-            context.run_task(
-                "Fight_Magic_Special_Cast",
-                pipeline_override={"Fight_Magic_Special_Cast": {"expected": MagicName}},
-            )
-            logger.info(f"施放魔法:{MagicName}")
-            return True
+            if result.filtered_results:
+                context.run_task(
+                    "Fight_Magic_Special_Cast",
+                    pipeline_override={
+                        "Fight_Magic_Special_Cast": {"expected": MagicName}
+                    },
+                )
+                logger.info(f"施放魔法:{MagicName}")
+                return True
+            else:
+                if count < 3:
+                    x, y = magic_special_type[count]
+                    context.tasker.controller.post_click(x, y).wait()
+                    time.sleep(1)
         else:
             if count < 3:
                 x, y = magic_special_type[count]
@@ -237,14 +256,20 @@ def check_magic_special(MagicName: str, context: Context):
     count = 0
     while count <= 3:
         image = context.tasker.controller.post_screencap().wait().get()
-        if context.run_recognition(
+        if result := context.run_recognition(
             "Fight_Magic_Special_Cast",
             image,
             pipeline_override={"Fight_Magic_Special_Cast": {"expected": MagicName}},
         ):
-            logger.info(f"找到了魔法:{MagicName}")
-            context.run_task("BackText")
-            return True
+            if result.filtered_results:
+                logger.info(f"找到了魔法:{MagicName}")
+                context.run_task("BackText")
+                return True
+            else:
+                if count < 3:
+                    x, y = magic_special_type[count]
+                    context.tasker.controller.post_click(x, y).wait()
+                    time.sleep(1)
         else:
             if count < 3:
                 x, y = magic_special_type[count]
@@ -535,10 +560,13 @@ def findItem(
     while BagRecoDetail := context.run_recognition(
         "Bag_ToPrevPage", context.tasker.controller.post_screencap().wait().get()
     ):
-        box = BagRecoDetail.best_result.box
-        center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
-        context.tasker.controller.post_click(center_x, center_y).wait()
-        time.sleep(0.5)
+        if BagRecoDetail.best_result:
+            box = BagRecoDetail.best_result.box
+            center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
+            context.tasker.controller.post_click(center_x, center_y).wait()
+            time.sleep(0.5)
+        else:
+            break
 
     # 开始寻找
     while True:
@@ -556,7 +584,7 @@ def findItem(
         )
 
         # 输出目标装备是否存在
-        if ItemRecoDetail:
+        if ItemRecoDetail.filtered_results:
             logger.info(f"已找到: {equipmentName}")
             if isUse:
                 center_x, center_y = (
@@ -577,8 +605,12 @@ def findItem(
                     logger.info(f"使用物品 {equipmentName}, at {dst_x},{dst_y}")
                     context.tasker.controller.post_click(dst_x, dst_y).wait()
             break
-        elif context.run_recognition("Bag_ToNextPage", image):
-            context.run_task("Bag_ToNextPage")
+        elif nextPage := context.run_recognition("Bag_ToNextPage", image):
+            if nextPage.best_result:
+                context.run_task("Bag_ToNextPage")
+            else:
+                logger.info(f"背包未找到: {equipmentName}")
+                return False
         else:
             logger.info(f"背包未找到: {equipmentName}")
             return False
@@ -816,7 +848,7 @@ def dragonwish(targetWish: str, context: Context):
     time.sleep(8)
     textdetail = context.run_task("Fight_FindText")
     if textdetail.nodes:
-        for result in textdetail.nodes[0].recognition.filterd_results:
+        for result in textdetail.nodes[0].recognition.filtered_results:
             if result.text.endswith("！") or result.text.endswith("!"):
                 result.text = result.text[:-1]
             cuurent_wish_index = wishlist.index(result.text)
@@ -1099,10 +1131,16 @@ def Saveyourlife(context: Context):
 def handle_dragon_event(map_str: str, context: Context):
     # 检测神龙
     img = context.tasker.controller.post_screencap().wait().get()
-    if not context.run_recognition("Fight_CheckDragonBall", img):
-        return False
+    if result := context.run_recognition("Fight_CheckDragonBall", img):
+        logger.info(f"龙珠识别结果：{result.filtered_results}")
+        if not result.filtered_results:
+            return False
 
-    if context.run_recognition("Fight_FindDragon", img):
+    if result := context.run_recognition("Fight_FindDragon", img):
+        logger.info(f"神龙识别结果：{result.filtered_results}")
+        if not result.filtered_results:
+            return False
+
         logger.info("是神龙,俺,俺们有救了！！！")
         logger.info(f"当前:{map_str}")
         dragonwish(map_str, context)
@@ -1183,8 +1221,8 @@ def handle_skillShop_event(
                 }
             },
         ):
-            logger.info(f"找到商品{len(recoDetail.filterd_results)}个, 开始购物")
-            for result in recoDetail.filterd_results:
+            logger.info(f"找到商品{len(recoDetail.filtered_results)}个, 开始购物")
+            for result in recoDetail.filtered_results:
                 if result.score < 0.8:
                     continue
                 box = result.box
