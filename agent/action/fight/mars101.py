@@ -81,7 +81,7 @@ class Mars101(CustomAction):
                 taskdetail = context.run_task("Mars_GetDemonTitle_Confirm")
             else:
                 taskdetail = context.run_task("Mars_GetDemonTitle_Confirm_2")
-            if taskdetail.nodes:
+            if taskdetail.nodes and taskdetail.nodes[0].completed:
                 logger.info("已获得恶魔系称号")
                 self.is_demontitle_enable = True
             else:
@@ -146,7 +146,7 @@ class Mars101(CustomAction):
         ):
             if clear:
                 logger.info("有地板或者怪物残留，再次清层")
-                context.run_task(
+                result = context.run_task(
                     "Mars_Fight_ClearCurrentLayer",
                     pipeline_override={
                         "Mars_Fight_ClearCurrentLayer": {
@@ -154,6 +154,7 @@ class Mars101(CustomAction):
                         }
                     },
                 )
+                # logger.info(f"再次清层结果: {result}")
             if checkMonster:
                 logger.info("有怪物残留")
             if checkGrid:
@@ -1126,7 +1127,7 @@ class Mars101(CustomAction):
         if normalReward and context.run_recognition("Mars_Reward", image).hit:
             logger.info("触发Mars奖励事件")
             mars_reward_detail = context.run_task("Mars_Reward")
-            if mars_reward_detail.nodes:
+            if mars_reward_detail and mars_reward_detail.nodes[0].completed:
                 for node in mars_reward_detail.nodes:
                     if node.name == "Mars_Inter_Confirm_Fail":
                         logger.info("领取Mars奖励失败, 为了防止卡死, 跳过这次领取")
