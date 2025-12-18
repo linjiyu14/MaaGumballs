@@ -87,7 +87,13 @@ def cast_magic(Type: str, MagicName: str, context: Context, TargetPos: tuple = (
         "Fight_Magic_Elemental",
         pipeline_override={
             "Fight_Magic_Elemental": {
-                "next": [MagicType[Type], "Fight_FindDragon", "Fight_FindRespawn"],
+                "next": [
+                    MagicType[Type],
+                    "Fight_FindDragon",
+                    "Fight_FindRespawn",
+                    "[JumpBack]Fight_SkillPack_Type",
+                    "[JumpBack]Fight_SkillPack_Open",
+                ],
                 "pre_delay": 100,
             }
         },
@@ -99,7 +105,6 @@ def cast_magic(Type: str, MagicName: str, context: Context, TargetPos: tuple = (
         image,
         pipeline_override={"Fight_Magic_Cast": {"expected": MagicName}},
     ).hit:
-
         # 自身释放的魔法
         if TargetPos == (0, 0):
             context.run_task(
@@ -733,6 +738,11 @@ def checkGumballsStatusV2(context: Context):
         for _ in range(5):
             image = context.tasker.controller.post_screencap().wait().get()
             if reco_detail := context.run_recognition("Fight_CheckStatusText", image):
+                if not reco_detail.hit:
+                    logger.warning("状态识别失败，等待一秒再次识别")
+                    time.sleep(1)
+                    context.run_task("Fight_OpenStatusPanel")
+                    continue
                 try:
                     nodes = reco_detail.all_results
                     new_status = pair_by_distance(nodes, max_distance=200)
@@ -1139,13 +1149,14 @@ def handle_downstair_event(context: Context):
     temp_layer = handle_currentlayer_event(context)
     recoDetail = context.run_task("Fight_OpenedDoor")
     if (
-        not recoDetail.nodes
+        not recoDetail.nodes[0].completed
         and context.run_recognition(
             "FindKeyHole", context.tasker.controller.post_screencap().wait().get()
         ).hit
     ):
         logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
-        send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
+        context.run_task("Zdjl_Start")
+        # send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
         send_message(f"MaaGB", "发现神秘洞穴，请及时处理")
 
         while not context.run_recognition(
@@ -1157,7 +1168,9 @@ def handle_downstair_event(context: Context):
                 return False
             time.sleep(3)
 
+        context.run_task("Zdjl_Stop")
         logger.info("冒险者大人已找到钥匙捏，继续探索")
+        send_message(f"MaaGB", "冒险者大人已找到钥匙捏~")
         context.run_task("Fight_OpenedDoor")
     # 确认层数更换再返回
     for _ in range(5):

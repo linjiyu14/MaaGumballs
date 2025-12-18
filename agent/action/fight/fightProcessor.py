@@ -328,6 +328,8 @@ class FightProcessor:
         if recoDetail := context.run_recognition(
             "Fight_ClosedDoor", context.tasker.controller.post_screencap().wait().get()
         ):
+            if not recoDetail.hit:
+                return 0, 0
             for r in range(self.rows):
                 for c in range(self.cols):
                     if self.is_roi_mostly_overlapping(
@@ -341,6 +343,8 @@ class FightProcessor:
         if recoDetail := context.run_recognition(
             "Fight_OpenedDoor", context.tasker.controller.post_screencap().wait().get()
         ):
+            if not recoDetail.hit:
+                return 0, 0
             for r in range(self.rows):
                 for c in range(self.cols):
                     if self.is_roi_mostly_overlapping(

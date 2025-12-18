@@ -118,11 +118,11 @@ class TSD_explore(CustomAction):
                         pipeline_override={
                             "TSD_checkTargetFleetFree": {"roi": self.fleetRoiList[key]},
                             "TSD_View": {
-                                "next": ["TSD_EndExploit"],
-                                "interrupt": [
-                                    "TSD_WithdrawFleet",
-                                    "TSD_EndExplore",
-                                    "BackText",
+                                "next": [
+                                    "TSD_EndExploit",
+                                    "[JumpBack]TSD_WithdrawFleet",
+                                    "[JumpBack]TSD_EndExplore",
+                                    "[JumpBack]BackText",
                                 ],
                             },
                         },
@@ -190,8 +190,10 @@ class TSD_explore(CustomAction):
                         "recognition": "OCR",
                         "expected": self.fleet_list[:1],
                         "roi": [44, 164, 627, 537],
-                        "interrupt": ["TSD_SelectCancelButton"],
-                        "next": ["TSD_ClickAttackButton"],
+                        "next": [
+                            "TSD_ClickAttackButton",
+                            "[JumpBack]TSD_SelectCancelButton",
+                        ],
                     }
                 },
             },
