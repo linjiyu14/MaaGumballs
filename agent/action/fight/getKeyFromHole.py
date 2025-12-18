@@ -118,7 +118,7 @@ class GetKeyFromHole_Test(CustomAction):
         time.sleep(3)
 
         img = context.tasker.controller.post_screencap().wait().get()
-        if context.run_recognition("Fight_ClosedDoor", img):
+        if context.run_recognition("Fight_ClosedDoor", img).hit:
             return CustomAction.RunResult(success=False)
         else:
             return CustomAction.RunResult(success=True)

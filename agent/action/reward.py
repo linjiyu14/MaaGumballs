@@ -56,7 +56,7 @@ class UnionReward_Execute(CustomAction):
         context.run_task("EntryUnionReward")
 
         img = context.tasker.controller.post_screencap().wait().get()
-        if not context.run_recognition("CheckUnionWindows", img):
+        if not context.run_recognition("CheckUnionWindows", img).hit:
             context.run_task("BackText")
 
         context.run_task("EntryUnionTask")

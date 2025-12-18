@@ -42,7 +42,7 @@ class Shopping(CustomAction):
             },
         )
         # Click boxCenter
-        if recoDetail:
+        if recoDetail.hit:
             box = recoDetail.best_result.box
             context.tasker.controller.post_click(
                 int(box[0] + box[2] / 2), int(box[1] + box[3] / 2)
@@ -89,7 +89,7 @@ class Shopping(CustomAction):
                 },
             )
 
-            if recoDetail:
+            if recoDetail.hit:
                 logger.info(f"找到商品{len(recoDetail.all_results)}个, 开始购物")
                 for result in recoDetail.all_results:
                     if result.score < 0.8:
@@ -131,7 +131,7 @@ class Shopping(CustomAction):
                 },
             )
 
-            if recoDetail:
+            if recoDetail.hit:
                 logger.info(f"找到商品{len(recoDetail.all_results)}个, 开始购物")
                 for result in recoDetail.all_results:
                     if result.score < 0.8:
@@ -161,7 +161,7 @@ class Shopping(CustomAction):
         )
 
         # 符石商店购物
-        if recoDetail:
+        if recoDetail.hit:
             context.run_task("Shop_Runestone")
 
         # 返回商店列表
@@ -187,7 +187,7 @@ class Shopping(CustomAction):
         )
 
         # 佣兵商店购物
-        if recoDetail:
+        if recoDetail.hit:
             context.run_task("Shop_Mercenary")
 
         # 返回商店列表
@@ -258,6 +258,9 @@ class SkillShop_Shopping(CustomAction):
                 }
             },
         ):
+            if not recoDetail.hit:
+                logger.info("未找到商品")
+                return CustomAction.RunResult(success=True)
             logger.info(f"找到商品{len(recoDetail.filterd_results)}个, 开始购物")
             for result in recoDetail.filterd_results:
                 if result.score < 0.8:
@@ -290,17 +293,18 @@ class Mars_Shopping(CustomAction):
                 }
             },
         ):
-            logger.info(f"找到战利品{len(recoDetail.filterd_results)}个, 开始购物")
-            for result in recoDetail.filterd_results:
-                if result.score < 0.8:
-                    continue
-                box = result.box
-                context.tasker.controller.post_click(
-                    int(box[0] + box[2] / 2) + 65, int(box[1] + box[3] / 2) - 85
-                ).wait()
-                time.sleep(0.3)
+            if recoDetail.hit:
+                logger.info(f"找到战利品{len(recoDetail.filterd_results)}个, 开始购物")
+                for result in recoDetail.filterd_results:
+                    if result.score < 0.8:
+                        continue
+                    box = result.box
+                    context.tasker.controller.post_click(
+                        int(box[0] + box[2] / 2) + 65, int(box[1] + box[3] / 2) - 85
+                    ).wait()
+                    time.sleep(0.3)
 
-                context.run_task("ConfirmButton_500ms")
+                    context.run_task("ConfirmButton_500ms")
         time.sleep(0.3)
         if recoDetail := context.run_recognition(
             "Shop_FindMarsSpecialBox_reco",
@@ -314,16 +318,19 @@ class Mars_Shopping(CustomAction):
                 }
             },
         ):
-            logger.info(f"找到特殊战利品{len(recoDetail.filterd_results)}个, 开始购物")
-            for result in recoDetail.filterd_results:
-                if result.score < 0.8:
-                    continue
-                box = result.box
-                context.tasker.controller.post_click(
-                    box[0] + box[2] // 2, box[1] + box[3] // 2
+            if recoDetail.hit:
+                logger.info(
+                    f"找到特殊战利品{len(recoDetail.filterd_results)}个, 开始购物"
                 )
-                time.sleep(0.3)
-                context.run_task("ConfirmButton_500ms")
+                for result in recoDetail.filterd_results:
+                    if result.score < 0.8:
+                        continue
+                    box = result.box
+                    context.tasker.controller.post_click(
+                        box[0] + box[2] // 2, box[1] + box[3] // 2
+                    )
+                    time.sleep(0.3)
+                    context.run_task("ConfirmButton_500ms")
 
         context.run_task("Fight_ReturnMainWindow")
         return CustomAction.RunResult(success=True)
