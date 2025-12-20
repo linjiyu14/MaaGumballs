@@ -60,8 +60,10 @@ class JJC101(CustomAction):
             RunResult := context.run_recognition(
                 "Fight_CheckLayer",
                 context.tasker.controller.post_screencap().wait().get(),
-            ).hit
+            )
         ):
+            if RunResult.hit == False :
+                continue  
             tempLayers = fightUtils.extract_num_layer(RunResult.best_result.text)
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
