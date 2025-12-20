@@ -1542,6 +1542,7 @@ class Mars101(CustomAction):
 
     def leaveSpecialLayer(self, context: Context):
         context.run_task("Fight_ReturnMainWindow")
+        count = 0
         for _ in range(10):
             if context.run_recognition(
                 "Mars_LeaveSpecialLayer",
@@ -1554,6 +1555,12 @@ class Mars101(CustomAction):
             context.tasker.controller.post_screencap().wait().get(),
         ).hit:
             time.sleep(1)
+            if count < 10:
+                context.run_task("Mars_LeaveSpecialLayer")
+                count += 1
+            else:
+                send_message("MaaGB", "自动离开休息室失败10次，请冒险者大大手动离开!")
+                break
         logger.info("离开休息室")
         return True
 
