@@ -60,7 +60,7 @@ class JJC101(CustomAction):
             RunResult := context.run_recognition(
                 "Fight_CheckLayer",
                 context.tasker.controller.post_screencap().wait().get(),
-            )
+            ).hit
         ):
             if RunResult.hit == False :
                 continue  
