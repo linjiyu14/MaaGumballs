@@ -261,8 +261,8 @@ class SkillShop_Shopping(CustomAction):
             if not recoDetail.hit:
                 logger.info("未找到商品")
                 return CustomAction.RunResult(success=True)
-            logger.info(f"找到商品{len(recoDetail.filterd_results)}个, 开始购物")
-            for result in recoDetail.filterd_results:
+            logger.info(f"找到商品{len(recoDetail.filtered_results)}个, 开始购物")
+            for result in recoDetail.filtered_results:
                 if result.score < 0.8:
                     continue
                 box = result.box
@@ -294,8 +294,8 @@ class Mars_Shopping(CustomAction):
             },
         ):
             if recoDetail.hit:
-                logger.info(f"找到战利品{len(recoDetail.filterd_results)}个, 开始购物")
-                for result in recoDetail.filterd_results:
+                logger.info(f"找到战利品{len(recoDetail.filtered_results)}个, 开始购物")
+                for result in recoDetail.filtered_results:
                     if result.score < 0.8:
                         continue
                     box = result.box
@@ -320,9 +320,9 @@ class Mars_Shopping(CustomAction):
         ):
             if recoDetail.hit:
                 logger.info(
-                    f"找到特殊战利品{len(recoDetail.filterd_results)}个, 开始购物"
+                    f"找到特殊战利品{len(recoDetail.filtered_results)}个, 开始购物"
                 )
-                for result in recoDetail.filterd_results:
+                for result in recoDetail.filtered_results:
                     if result.score < 0.8:
                         continue
                     box = result.box
