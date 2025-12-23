@@ -175,12 +175,12 @@ def get_machine_name() -> str:
 
 def generate():
     os_description = get_os_description()
-    os_stalbe_description = get_stable_os_description(os_description)
+    os_stable_description = get_stable_os_description(os_description)
     os_architecture = get_os_architecture()
     plain_text_specific_id = get_platform_specific_id()
     machine_name = get_machine_name()
 
-    combined_string = f"{os_stalbe_description}_{os_architecture}_{plain_text_specific_id}_{machine_name}"
+    combined_string = f"{os_stable_description}_{os_architecture}_{plain_text_specific_id}_{machine_name}"
     return sha256(combined_string).upper()
 
 
