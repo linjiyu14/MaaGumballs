@@ -53,18 +53,17 @@ class Mars101(CustomAction):
 
         # 进入地图初始化
         logger.info(f"当前层数: {self.layers}, 进入地图初始化")
-        # 初始化魔法助手状态
         if fightUtils.check_magic_special("魔法助手", context):
             self.isGetMagicAssist = True
             logger.info(f"已获得魔法助手")
             if self.layers > self.target_leave_layer_para - 19:
                 self.isUseMagicAssist = True
                 logger.info(f"已开启魔法助手")
-        # 初始化泰坦之足状态
+
         if fightUtils.check_magic_special("泰坦之足", context):
             logger.info(f"已获得泰坦之足")
             self.isGetTitanFoot = True
-        # 初始化恶魔系称号状态
+
         # 如果恶魔系称号期望开启，那么在初始化阶段启用手记获取称号
         if self.astrological_title_para:
             context.run_task("Fight_ReturnMainWindow")
@@ -86,6 +85,7 @@ class Mars101(CustomAction):
                 self.is_demontitle_enable = True
             else:
                 logger.info("获取恶魔系称号失败")
+
         if self.director_para:
             # 名导心得相关
             fightUtils.openBagAndUseItem(
@@ -328,7 +328,7 @@ class Mars101(CustomAction):
         HPStatus = CurrentHP / MaxHp
         return HPStatus
 
-    def Control_tenpecentHP(self, context: Context):
+    def Control_TenpecentHP(self, context: Context):
         """
         尽可能压低目标血量，同时确保目标不会死亡。
 
@@ -358,12 +358,11 @@ class Mars101(CustomAction):
         logger.info(f"开始安全压血操作，初始血量: {current_hp:.2%}")
 
         # 测试石肤术伤害
-        _, max_stoneskin_damage = self._test_stoneskin_damage(context, TEST_ROUNDS)
+        _, max_stoneskin_damage = self.Test_Stoneskin_Damage(context, TEST_ROUNDS)
         if max_stoneskin_damage is None:
             logger.warning("测试未造成伤害，可能被免疫")
             return 10000000  # 测试失败，返回特殊值
 
-        # 计算祝福术伤害（基于石肤术最大伤害的8倍）
         blessing_damage = max_stoneskin_damage * BLESSING_DAMAGE_MULTIPLIER
 
         logger.info(
@@ -372,8 +371,6 @@ class Mars101(CustomAction):
         )
         # 测试石肤术伤害之后更新一下当前血量
         current_hp = self.Get_CurrentHPStatus(context)
-
-        # 伤害记录
         stoneskin_damage_history = []  # 石肤术伤害历史
         blessing_damage_history = []  # 祝福术伤害历史
 
@@ -385,9 +382,7 @@ class Mars101(CustomAction):
             # 计算安全可减少的血量（保留安全边界）
             safe_hp_to_reduce = current_hp - SAFETY_MARGIN
 
-            # 检查是否可以使用祝福术
             if blessing_damage <= safe_hp_to_reduce and current_hp > 0.1:
-                # 祝福术伤害适中，不会导致死亡
                 prev_hp = current_hp
                 logger.info(
                     f"使用祝福术，当前血量: {current_hp:.2%}, 预计最大伤害: {blessing_damage:.2%}"
@@ -401,20 +396,16 @@ class Mars101(CustomAction):
                 actual_damage = prev_hp - current_hp
                 if actual_damage > 0:
                     blessing_damage_history.append(actual_damage)
-                    # 保持历史记录在指定大小
                     if len(blessing_damage_history) > DAMAGE_HISTORY_SIZE:
                         blessing_damage_history.pop(0)
 
-                    # 更新祝福术最大伤害估计（使用历史最大值）
                     new_max_blessing = max(blessing_damage_history)
                     if new_max_blessing > blessing_damage:
                         logger.info(
                             f"祝福术最大伤害上调: {blessing_damage:.2%} -> {new_max_blessing:.2%}"
                         )
                         blessing_damage = new_max_blessing
-                    elif (
-                        new_max_blessing < blessing_damage * 0.8
-                    ):  # 如果实际伤害明显小于预期，下调预期
+                    elif new_max_blessing < blessing_damage * 0.8:
                         logger.info(
                             f"祝福术最大伤害下调: {blessing_damage:.2%} -> {new_max_blessing:.2%}"
                         )
@@ -498,7 +489,7 @@ class Mars101(CustomAction):
 
         return current_hp
 
-    def _test_stoneskin_damage(self, context: Context, test_rounds: int) -> tuple:
+    def Test_Stoneskin_Damage(self, context: Context, test_rounds: int) -> tuple:
         """测试石肤术的平均伤害和最大伤害。
 
         Args:
@@ -896,7 +887,7 @@ class Mars101(CustomAction):
             #             time.sleep(5)
             #             break
 
-            #     self.Control_tenpecentHP(context)
+            #     self.Control_TenpecentHP(context)
             #     # 增加截图调试
             #     context.run_task(
             #         "WaitStableNode_ForOverride",
@@ -1447,12 +1438,6 @@ class Mars101(CustomAction):
             # boss召唤动作
             if not self.handle_boss_event(context):
                 return False
-            # fightUtils.handle_dragon_event("马尔斯", context)
-            # if context.run_recognition("Fight_FindRespawn", image):
-            #     logger.info("检测到死亡， 尝试小SL")
-            #     fightUtils.Saveyourlife(context)
-            #     return False
-            return True
         # 小怪层探索
         else:
             context.run_task(
@@ -1463,7 +1448,6 @@ class Mars101(CustomAction):
                     }
                 },
             )
-
         return True
 
     @timing_decorator
@@ -1607,7 +1591,6 @@ class Mars101(CustomAction):
         logger.info(f"本次任务目标层数: {self.target_leave_layer_para}")
 
         while self.layers <= 159:
-            # 检查是否停止任务
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
                 return CustomAction.RunResult(success=False)
@@ -1636,18 +1619,18 @@ class Mars101(CustomAction):
                 break
 
         logger.info(f"马尔斯探索结束，当前到达{self.layers}层")
+
+        # 手动结算·暂离
         if self.manual_leave_para:
-            # 暂离
             time.sleep(1)
             context.run_task("Save_Status")
             send_message(
                 "MaaGB",
                 f"当前到达{self.layers}层，已暂离保存，请冒险者大人快来结算吧~",
             )
-
         else:
-            # 退出
             context.run_task("Fight_LeaveMaze")
+
         # 获取并打印统计信息
         stats = fightUtils.get_time_statistics()
         for func_name, data in stats.items():

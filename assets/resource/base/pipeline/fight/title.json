@@ -68,7 +68,9 @@
         "timeout": 2000
     },
     "TitlePanel_Panel": {
-        "next": ["[JumpBack]ConfirmButton_500ms"],
+        "next": [
+            "[JumpBack]ConfirmButton_500ms"
+        ],
         "recognition": "OCR",
         "expected": "系称号",
         "roi": [
@@ -100,10 +102,10 @@
     "TitlePanel_Learnable_Fnish": {
         "recognition": "TemplateMatch",
         "roi": [
-            169,
+            182,
             138,
-            387,
-            127
+            374,
+            144
         ],
         "template": [
             "fight/UniversalUI/new_Star_3.png",
@@ -114,7 +116,7 @@
         "next": [
             "BackText_700ms"
         ],
-        "post_delay": 200,
+        "post_delay": 500,
         "timeout": 2000
     },
     "TitlePanel_Learnable_Check": {
