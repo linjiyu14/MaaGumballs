@@ -1161,9 +1161,7 @@ def handle_downstair_event(context: Context):
         ).hit
     ):
         logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
-        context.run_task("Zdjl_Start")
-        # send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
-        send_message(f"MaaGB", "发现神秘洞穴，请及时处理")
+        send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
 
         while not context.run_recognition(
             "Fight_OpenedDoor",
@@ -1174,9 +1172,7 @@ def handle_downstair_event(context: Context):
                 return False
             time.sleep(3)
 
-        context.run_task("Zdjl_Stop")
         logger.info("冒险者大人已找到钥匙捏，继续探索")
-        send_message(f"MaaGB", "冒险者大人已找到钥匙捏~")
         context.run_task("Fight_OpenedDoor")
     # 确认层数更换再返回
     for _ in range(5):
