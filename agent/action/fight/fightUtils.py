@@ -1164,6 +1164,7 @@ def handle_downstair_event(context: Context):
     ):
         logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
         send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
+        send_message("洞穴警告", "发现神秘洞穴，请及时处理！")
 
         while not context.run_recognition(
             "Fight_OpenedDoor",
