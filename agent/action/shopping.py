@@ -46,7 +46,7 @@ class Shopping(CustomAction):
             box = recoDetail.best_result.box
             context.tasker.controller.post_click(
                 int(box[0] + box[2] / 2), int(box[1] + box[3] / 2)
-            )
+            ).wait()
         time.sleep(1)
 
         return recoDetail
@@ -141,7 +141,7 @@ class Shopping(CustomAction):
                     box = result.box
                     context.tasker.controller.post_click(
                         int(box[0] + box[2] / 2) + 40, int(box[1] + box[3] / 2) - 80
-                    )
+                    ).wait()
                     time.sleep(0.5)
                     context.run_task("ConfirmButton")
 
@@ -273,7 +273,7 @@ class SkillShop_Shopping(CustomAction):
                 box = result.box
                 context.tasker.controller.post_click(
                     box[0] + box[2] // 2, box[1] + box[3] // 2
-                )
+                ).wait()
                 time.sleep(0.5)
                 context.run_task("ConfirmButton_500ms")
         context.run_task("Fight_ReturnMainWindow")
@@ -333,7 +333,7 @@ class Mars_Shopping(CustomAction):
                     box = result.box
                     context.tasker.controller.post_click(
                         box[0] + box[2] // 2, box[1] + box[3] // 2
-                    )
+                    ).wait()
                     time.sleep(0.3)
                     context.run_task("ConfirmButton_500ms")
 

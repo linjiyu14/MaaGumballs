@@ -1086,10 +1086,10 @@ def OpenNatureSwitch(isDefense: bool, context: Context):
 
 def autoOpenPicup(context: Context):
     # 测试中
-    context.tasker.controller.post_touch_down(68, 661)
+    context.tasker.controller.post_touch_down(68, 661).wait()
     time.sleep(5)
     context.run_task("Fight_OpenedDoor")
-    context.tasker.controller.post_touch_up()
+    context.tasker.controller.post_touch_up().wait()
 
 
 def Saveyourlife(context: Context):
@@ -1222,7 +1222,7 @@ def handle_skillShop_event(
                 box = result.box
                 context.tasker.controller.post_click(
                     box[0] + box[2] // 2, box[1] + box[3] // 2
-                )
+                ).wait()
                 time.sleep(0.5)
                 context.run_task("ConfirmButton_500ms")
         context.run_task("Fight_ReturnMainWindow")

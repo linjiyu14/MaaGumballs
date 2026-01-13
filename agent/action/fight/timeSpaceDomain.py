@@ -225,7 +225,7 @@ class TSD_explore(CustomAction):
             box = explore.box
             btn = context.tasker.controller.post_click(
                 box[0] + box[2] // 2, box[1] + box[3] // 2
-            )
+            ).wait()
             time.sleep(2)
             if not self.checkClickTarget(context, ["调查", "袭击"]):
                 # 未点击到目标，证明因为地图移动导致目标位置变化，重新检查目标
@@ -369,7 +369,7 @@ class TSD_explore(CustomAction):
                         box = targetList[0].box
                         btn = context.tasker.controller.post_click(
                             box[0] + box[2] // 2, box[1] + box[3] // 2
-                        )
+                        ).wait()
                         time.sleep(2)  # 有动画，需要停顿下才能识别
                         planetName = context.run_recognition(
                             "GetPlanetName",
