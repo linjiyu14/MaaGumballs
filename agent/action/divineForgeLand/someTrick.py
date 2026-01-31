@@ -320,7 +320,7 @@ class PoolTrick_Test(CustomAction):
             click_job = context.tasker.controller.post_click(
                 searchpoolpos[0] + searchpoolpos[2] // 2,
                 searchpoolpos[1] + searchpoolpos[3] // 2,
-            )
+            ).wait()
             click_job.wait()
             time.sleep(0.1)
 
@@ -455,7 +455,7 @@ class SunlightTrick_Test(CustomAction):
             click_job = context.tasker.controller.post_click(
                 searchbodypos[0] + searchbodypos[2] // 2,
                 searchbodypos[1] + searchbodypos[3] // 2,
-            )
+            ).wait()
             click_job.wait()
             time.sleep(0.1)
 

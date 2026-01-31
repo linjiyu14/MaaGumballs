@@ -279,11 +279,11 @@ def title_learn(
     # 对应几级称号的坐标
     titileRect: list = [
         [0, 0, 0, 0],
-        [53, 843, 138, 152],
-        [185, 854, 119, 136],
-        [296, 847, 127, 140],
-        [418, 842, 123, 147],
-        [530, 847, 133, 147],
+        [95, 890, 65, 52],
+        [210, 883, 70, 62],
+        [329, 883, 63, 59],
+        [446, 886, 62, 52],
+        [560, 881, 69, 67],
     ]
 
     for i in range(0, expectedLevel):
@@ -353,11 +353,11 @@ def title_learn_branch(
     # 对应几级称号的坐标
     titileRect: list = [
         [0, 0, 0, 0],
-        [53, 843, 138, 152],
-        [185, 854, 119, 136],
-        [296, 847, 127, 140],
-        [418, 842, 123, 147],
-        [530, 847, 133, 147],
+        [95, 890, 65, 52],
+        [210, 883, 70, 62],
+        [329, 883, 63, 59],
+        [446, 886, 62, 52],
+        [560, 881, 69, 67],
     ]
     if not repeatable:
         titleName_roi = [54, 463, 623, 550]
@@ -1086,10 +1086,10 @@ def OpenNatureSwitch(isDefense: bool, context: Context):
 
 def autoOpenPicup(context: Context):
     # 测试中
-    context.tasker.controller.post_touch_down(68, 661)
+    context.tasker.controller.post_touch_down(68, 661).wait()
     time.sleep(5)
     context.run_task("Fight_OpenedDoor")
-    context.tasker.controller.post_touch_up()
+    context.tasker.controller.post_touch_up().wait()
 
 
 def Saveyourlife(context: Context):
@@ -1222,7 +1222,7 @@ def handle_skillShop_event(
                 box = result.box
                 context.tasker.controller.post_click(
                     box[0] + box[2] // 2, box[1] + box[3] // 2
-                )
+                ).wait()
                 time.sleep(0.5)
                 context.run_task("ConfirmButton_500ms")
         context.run_task("Fight_ReturnMainWindow")

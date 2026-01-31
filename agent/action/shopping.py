@@ -46,7 +46,7 @@ class Shopping(CustomAction):
             box = recoDetail.best_result.box
             context.tasker.controller.post_click(
                 int(box[0] + box[2] / 2), int(box[1] + box[3] / 2)
-            )
+            ).wait()
         time.sleep(1)
 
         return recoDetail
@@ -77,10 +77,10 @@ class Shopping(CustomAction):
         while SwipeCount > 0:
             img = context.tasker.controller.post_screencap().wait().get()
             recoDetail = context.run_recognition(
-                "Shop_FindGoldCions_reco",
+                "Shop_FindGoldCionReco",
                 img,
                 pipeline_override={
-                    "Shop_FindGoldCions_reco": {
+                    "Shop_FindGoldCionReco": {
                         "recognition": "TemplateMatch",
                         "template": "Shop/GoldCoins.png",
                         "roi": [65, 334, 610, 686],
@@ -100,14 +100,16 @@ class Shopping(CustomAction):
                     ).wait()
                     time.sleep(1)
                     context.run_task("ConfirmButton")
-                    if self.Shop_ShoppingRewards_Check(context):
+                    ShopRecoDetail = self.Shop_ShoppingRewards_Check(context)
+                    if ShopRecoDetail.hit:
                         context.run_task("Shop_ShoppingRewards")
 
             context.run_task("SwipeShopList")
             SwipeCount -= 1
 
         # 返回商店列表
-        if not self.CheckShopListWindows(context):
+        ShopListRecoDetail = self.CheckShopListWindows(context)
+        if not ShopListRecoDetail.hit:
             context.run_task("BackText")
         return True
 
@@ -139,7 +141,7 @@ class Shopping(CustomAction):
                     box = result.box
                     context.tasker.controller.post_click(
                         int(box[0] + box[2] / 2) + 40, int(box[1] + box[3] / 2) - 80
-                    )
+                    ).wait()
                     time.sleep(0.5)
                     context.run_task("ConfirmButton")
 
@@ -165,7 +167,8 @@ class Shopping(CustomAction):
             context.run_task("Shop_Runestone")
 
         # 返回商店列表
-        if not self.CheckShopListWindows(context):
+        ShopListRecoDetail = self.CheckShopListWindows(context)
+        if not ShopListRecoDetail.hit:
             context.run_task("BackText")
 
         return True
@@ -191,7 +194,8 @@ class Shopping(CustomAction):
             context.run_task("Shop_Mercenary")
 
         # 返回商店列表
-        if not self.CheckShopListWindows(context):
+        ShopListRecoDetail = self.CheckShopListWindows(context)
+        if not ShopListRecoDetail.hit:
             context.run_task("BackText")
 
         return True
@@ -215,7 +219,8 @@ class Shopping(CustomAction):
         # 进入商店列表
         context.run_task("ClickSwitchShopButton")
 
-        if self.CheckShopListWindows(context):
+        ShopListRecoDetail = self.CheckShopListWindows(context)
+        if ShopListRecoDetail.hit:
             # 进入商店
             logger.info("进入商店列表成功")
 
@@ -268,7 +273,7 @@ class SkillShop_Shopping(CustomAction):
                 box = result.box
                 context.tasker.controller.post_click(
                     box[0] + box[2] // 2, box[1] + box[3] // 2
-                )
+                ).wait()
                 time.sleep(0.5)
                 context.run_task("ConfirmButton_500ms")
         context.run_task("Fight_ReturnMainWindow")
@@ -328,7 +333,7 @@ class Mars_Shopping(CustomAction):
                     box = result.box
                     context.tasker.controller.post_click(
                         box[0] + box[2] // 2, box[1] + box[3] // 2
-                    )
+                    ).wait()
                     time.sleep(0.3)
                     context.run_task("ConfirmButton_500ms")
 

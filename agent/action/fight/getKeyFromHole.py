@@ -106,7 +106,7 @@ class GetKeyFromHole_Test(CustomAction):
             # 移动按钮
             context.tasker.controller.post_swipe(
                 button_x, button_y, button_x + step, button_y, 100
-            )
+            ).wait()
             now_leftstring = (
                 context.run_task("FindLeftString").nodes[0].recognition.box.x
             )
