@@ -1,7 +1,6 @@
 from maa.agent.agent_server import AgentServer
 from maa.context import Context
 from maa.custom_action import CustomAction
-from maa.define import RecognitionDetail
 
 from utils import logger, send_message
 from action.fight import fightUtils
@@ -94,7 +93,9 @@ class TSD_explore(CustomAction):
     # 返回所有舰队
     def returnFleets(self, context: Context) -> bool:
         while True:
-
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return CustomAction.RunResult(success=False)
             img = context.tasker.controller.post_screencap().wait().get()
             for key in self.fleetRoiList:
                 status = context.run_recognition(
@@ -190,10 +191,6 @@ class TSD_explore(CustomAction):
                         "recognition": "OCR",
                         "expected": self.fleet_list[:1],
                         "roi": [44, 164, 627, 537],
-                        "next": [
-                            "TSD_ClickAttackButton",
-                            "[JumpBack]TSD_SelectCancelButton",
-                        ],
                     }
                 },
             },
@@ -251,6 +248,7 @@ class TSD_explore(CustomAction):
                 "expected"
             ] = self.fleet_list[:1]
             # logger.info(f"出战舰队顺序: {self.fleet_list}")
+
             if inPlanet and self.exploreNums == 0:
                 # 星球小怪任务完成后，返回地图
                 logger.info("该星球已无小怪，返回地图")
@@ -290,7 +288,7 @@ class TSD_explore(CustomAction):
                 "checkClickTarget": {
                     "recognition": "OCR",
                     "expected": target,
-                    "roi": [14, 283, 691, 756],
+                    "roi": [12, 152, 696, 1120],
                     "threshold": 0.8,
                 }
             },
@@ -301,6 +299,9 @@ class TSD_explore(CustomAction):
 
     def swipeMapToLeftTop(self, context: Context):
         while True:  # 将地图移动至左上角
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return CustomAction.RunResult(success=False)
             if self.checkBoundary(context, "LeftTop"):
                 break
             else:
@@ -358,7 +359,9 @@ class TSD_explore(CustomAction):
         flag = True
         # 检查是否存在目标
         while flag:
-
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return CustomAction.RunResult(success=False)
             targetList = self.GetTaskTargetList(context, taskType, threshold)
             if self.exploreNums > 0:
                 self.check = False  # 存在目标，到达地图边界就需要再次从左上角开始检查
