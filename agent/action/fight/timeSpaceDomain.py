@@ -91,7 +91,7 @@ class TSD_explore(CustomAction):
             return 0
 
     # 返回所有舰队
-    def returnFleets(self, context: Context) -> bool:
+    def returnFleets(self, context: Context) -> bool | CustomAction.RunResult:
         while True:
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
@@ -176,7 +176,7 @@ class TSD_explore(CustomAction):
         self,
         context: Context,
         taskType: str,
-    ) -> bool:
+    ) -> bool | CustomAction.RunResult:
         taskEntry: dict = {
             "explore": {
                 "taskName": "TSD_Investigate",
@@ -350,7 +350,7 @@ class TSD_explore(CustomAction):
     # 检测目标是否还存在
     def checkTargetExist(
         self, context: Context, taskType: str, threshold: float
-    ) -> bool:
+    ) -> bool | CustomAction.RunResult:
 
         if taskType in ["monster_boss", "planet"]:
             # 这两个任务直接可以从左上角开始检测
