@@ -26,8 +26,8 @@
     "Fight_ClosedDoor": {
         "recognition": "TemplateMatch",
         "template": [
-            "fight/closedDoor.png",
-            "fight/closedDoor_time_stop.png"
+            "fight/ClosedDoor.png",
+            "fight/ClosedDoor_time_stop.png"
         ],
         "roi": [
             5,
@@ -83,7 +83,7 @@
     "Fight_LeaveMaze_Leave": {
         "recognition": "TemplateMatch",
         "template": [
-            "fight/leaveDoor.png"
+            "fight/LeaveDoor.png"
         ],
         "roi": [
             4,

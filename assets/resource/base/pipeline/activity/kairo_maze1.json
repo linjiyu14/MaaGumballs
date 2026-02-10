@@ -1,7 +1,7 @@
 {
     "Kairo_Return_Home": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/home.png",
+        "template": "fight/kairo_maze/home.png",
         "roi": [
             47,
             883,
@@ -31,7 +31,7 @@
     },
     "Kairo_Return_Hotel": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Hotel.png",
+        "template": "fight/kairo_maze/hotel.png",
         "roi": [
             599,
             503,
@@ -59,7 +59,7 @@
     },
     "Kairo_Relive": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/kairoRestPoint.png",
+        "template": "fight/kairo_maze/kairoRestPoint.png",
         "roi": [
             11,
             794,
@@ -126,7 +126,7 @@
     },
     "Kairo_Enter_Cave1": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/cave_01.png",
+        "template": "fight/kairo_maze/cave_01.png",
         "roi": [
             29,
             238,
@@ -142,7 +142,7 @@
     },
     "Kairo_Enter_Cave2": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Cave_02.png",
+        "template": "fight/kairo_maze/cave_02.png",
         "roi": [
             29,
             238,
@@ -158,7 +158,7 @@
     },
     "Kairo_Enter_Cave3": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/cave_03.png",
+        "template": "fight/kairo_maze/cave_03.png",
         "roi": [
             29,
             238,
@@ -174,7 +174,7 @@
     },
     "Kairo_Enter_Cave7": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/cave_07.png",
+        "template": "fight/kairo_maze/cave_07.png",
         "roi": [
             29,
             238,
@@ -190,7 +190,7 @@
     },
     "Kairo_Click_Bell": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/bell.png",
+        "template": "fight/kairo_maze/bell.png",
         "roi": [
             8,
             597,
@@ -208,7 +208,7 @@
     },
     "Kairo_Click_Bell_Boss": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/bell.png",
+        "template": "fight/kairo_maze/bell.png",
         "roi": [
             39,
             899,
@@ -249,7 +249,7 @@
     },
     "Kairo_Enter_Pub": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/pub.png",
+        "template": "fight/kairo_maze/pub.png",
         "roi": [
             26,
             659,
@@ -262,7 +262,7 @@
     },
     "Kairo_SearchingMale": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/male.png",
+        "template": "fight/kairo_maze/male.png",
         "roi": [
             146,
             566,
@@ -293,7 +293,7 @@
     },
     "Kairo_Enter_WeaponStore": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/WeaponStore.png",
+        "template": "fight/kairo_maze/WeaponStore.png",
         "roi": [
             173,
             239,
@@ -306,7 +306,7 @@
     },
     "Kairo_Enter_ArmorStore": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/ArmorStore.png",
+        "template": "fight/kairo_maze/ArmorStore.png",
         "roi": [
             28,
             247,
@@ -319,7 +319,7 @@
     },
     "Kairo_Enter_WarriorPromotionStore": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/WarriorPromotionStore.png",
+        "template": "fight/kairo_maze/WarriorPromotionStore.png",
         "roi": [
             453,
             257,
@@ -332,7 +332,7 @@
     },
     "Kairo_Enter_SupportPromotionStore": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/SupportPromotionStore.png",
+        "template": "fight/kairo_maze/SupportPromotionStore.png",
         "roi": [
             599,
             249,
@@ -345,7 +345,7 @@
     },
     "Kairo_Enter_MonkPromotionStore": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/MonkPromotionStore.png",
+        "template": "fight/kairo_maze/MonkPromotionStore.png",
         "roi": [
             598,
             384,
@@ -358,7 +358,7 @@
     },
     "Kairo_Choose_WarriorMedal": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/WarriorMedal.png",
+        "template": "fight/kairo_maze/WarriorMedal.png",
         "roi": [
             120,
             529,
@@ -373,7 +373,7 @@
     },
     "Kairo_Choose_SupportMedal": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/SupportMedal.png",
+        "template": "fight/kairo_maze/SupportMedal.png",
         "roi": [
             120,
             529,
@@ -388,7 +388,7 @@
     },
     "Kairo_Choose_MonkMedal": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/MonkMedal.png",
+        "template": "fight/kairo_maze/MonkMedal.png",
         "roi": [
             120,
             529,
@@ -403,7 +403,7 @@
     },
     "Kairo_Choose_MonkMedal_4": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/MonkMedal_4.png",
+        "template": "fight/kairo_maze/MonkMedal_4.png",
         "roi": [
             315,
             568,
@@ -418,7 +418,7 @@
     },
     "Kairo_Choose_Axe": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Axe.png",
+        "template": "fight/kairo_maze/Axe.png",
         "roi": [
             51,
             524,
@@ -435,7 +435,7 @@
     },
     "Kairo_Choose_HolyMace": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/HolyMace.png",
+        "template": "fight/kairo_maze/HolyMace.png",
         "roi": [
             51,
             524,
@@ -452,7 +452,7 @@
     },
     "Kairo_Choose_Armor": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Armor.png",
+        "template": "fight/kairo_maze/Armor.png",
         "roi": [
             51,
             524,
@@ -482,7 +482,7 @@
     },
     "Kairo_ViewTeams": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Kairo_ViewTeams.png",
+        "template": "fight/kairo_maze/Kairo_ViewTeams.png",
         "roi": [
             469,
             918,
@@ -497,7 +497,7 @@
     },
     "Kairo_ClickCharacter1": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/character.png",
+        "template": "fight/kairo_maze/character.png",
         "roi": [
             89,
             324,
@@ -601,7 +601,7 @@
     },
     "Kairo_Confirm_Onbigmap": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/cave_01.png",
+        "template": "fight/kairo_maze/cave_01.png",
         "roi": [
             29,
             238,
@@ -612,7 +612,7 @@
     },
     "Kairo_Confirm_OnPub": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/male.png",
+        "template": "fight/kairo_maze/male.png",
         "roi": [
             146,
             566,
@@ -623,7 +623,7 @@
     },
     "Kairo_Confirm_OnHome": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Hotel.png",
+        "template": "fight/kairo_maze/hotel.png",
         "roi": [
             599,
             503,
@@ -662,7 +662,7 @@
     },
     "Kairo_Confirm_Boss": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Boss.png",
+        "template": "fight/kairo_maze/Boss.png",
         "roi": [
             537,
             461,
@@ -678,7 +678,7 @@
     },
     "Kairo_Confirm_NoBoss": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Boss.png",
+        "template": "fight/kairo_maze/Boss.png",
         "roi": [
             537,
             461,
@@ -735,7 +735,7 @@
     },
     "Kairo_PromoteToKnight": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Knight.png",
+        "template": "fight/kairo_maze/Knight.png",
         "roi": [
             362,
             467,
@@ -750,7 +750,7 @@
     },
     "Kairo_PromoteToSwordsman": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Swordsman.png",
+        "template": "fight/kairo_maze/Swordsman.png",
         "roi": [
             75,
             467,
@@ -765,7 +765,7 @@
     },
     "Kairo_PromoteToWhiteQueen": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/WhiteQueen.png",
+        "template": "fight/kairo_maze/WhiteQueen.png",
         "roi": [
             75,
             467,
@@ -780,7 +780,7 @@
     },
     "Kairo_PromoteToMonk_0": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Monk_0.png",
+        "template": "fight/kairo_maze/Monk_0.png",
         "roi": [
             362,
             467,
@@ -795,7 +795,7 @@
     },
     "Kairo_PromoteToMonk": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/Monk.png",
+        "template": "fight/kairo_maze/Monk.png",
         "roi": [
             362,
             467,
@@ -810,7 +810,7 @@
     },
     "Kairo_ClickSwitchMagic": {
         "recognition": "TemplateMatch",
-        "template": "fight/Kairo_maze/SwitchMagic.png",
+        "template": "fight/kairo_maze/SwitchMagic.png",
         "roi": [
             216,
             1049,

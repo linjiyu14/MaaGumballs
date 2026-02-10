@@ -15,8 +15,8 @@
     "CheckClosedDoor": {
         "recognition": "TemplateMatch",
         "template": [
-            "fight/closedDoor.png",
-            "fight/closedDoor_time_stop.png"
+            "fight/ClosedDoor.png",
+            "fight/ClosedDoor_time_stop.png"
         ],
         "action": "DoNothing",
         "threshold": 0.8,
