@@ -1,0 +1,24 @@
+{
+    "LogoutGame": {
+        "next": [
+            "StopGumballs"
+        ]
+    },
+    "ReturnMaze": {
+        "next": [
+            "Fight_MainWindow",
+            "[JumpBack]AlchemyReward",
+            "[JumpBack]StickyNote_Check",
+            "[JumpBack]GameLoading",
+            "[JumpBack]EnterGame2",
+            "[JumpBack]EnterGame",
+            "[JumpBack]IKnow",
+            "[JumpBack]StartGumballs"
+        ]
+    },
+    "StickyNote_Check": {
+        "next": [
+            "StickyNote_ContinueGame"
+        ]
+    }
+}
