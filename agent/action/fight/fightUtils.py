@@ -1155,13 +1155,11 @@ def handle_currentlayer_event(context: Context):
 
 def handle_downstair_event(context: Context):
     temp_layer = handle_currentlayer_event(context)
-    recoDetail = context.run_task("Fight_OpenedDoor")
-    if (
-        not recoDetail.nodes[0].completed
-        and context.run_recognition(
-            "FindKeyHole", context.tasker.controller.post_screencap().wait().get()
-        ).hit
-    ):
+    img = context.tasker.controller.post_screencap().wait().get()
+    if context.run_recognition("Fight_OpenedDoor", img).hit:
+        context.run_task("Fight_OpenedDoor")
+
+    elif context.run_recognition("FindKeyHole", img).hit:
         logger.warning("检查到神秘的洞穴捏，请冒险者大人检查！！")
         send_alert("洞穴警告", "发现神秘洞穴，请及时处理！")
         send_message("洞穴警告", "发现神秘洞穴，请及时处理！")
@@ -1177,6 +1175,7 @@ def handle_downstair_event(context: Context):
 
         logger.info("冒险者大人已找到钥匙捏，继续探索")
         context.run_task("Fight_OpenedDoor")
+
     # 确认层数更换再返回
     for _ in range(5):
         current_layer = handle_currentlayer_event(context)
