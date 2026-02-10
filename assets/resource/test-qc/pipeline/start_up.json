@@ -1,0 +1,53 @@
+{
+    "Start_Up": {
+        "next": [
+            "MainWindow_Check",
+            "[JumpBack]AlchemyReward",
+            "[JumpBack]StickyNote_Check",
+            "[JumpBack]GameLoading",
+            "[JumpBack]EnterGame2",
+            "[JumpBack]EnterGame",
+            "[JumpBack]IKnow",
+            "[JumpBack]StartGumballs"
+        ]
+    },
+    "StartGumballs": {
+        "post_delay": 8000,
+        "action": "StartApp",
+        "package": "com.qcplay.slimegogogo.qc"
+    },
+    "StopGumballs": {
+        "action": "StopApp",
+        "package": "com.qcplay.slimegogogo.qc"
+    },
+    "IKnow": {
+        "recognition": "OCR",
+        "expected": [
+            "我知道了"
+        ],
+        "roi": [
+            272,
+            757,
+            174,
+            49
+        ],
+        "action": "click",
+        "post_delay": 1000,
+        "timeout": 5000
+    },
+    "EnterGame2": {
+        "recognition": "OCR",
+        "expected": [
+            "进入游戏"
+        ],
+        "roi": [
+            162,
+            916,
+            150,
+            52
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 5000
+    }
+}

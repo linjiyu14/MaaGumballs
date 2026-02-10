@@ -75,6 +75,13 @@
             ]
         },
         {
+            "name": "test-青瓷",
+            "path": [
+                "{PROJECT_DIR}/resource/base",
+                "{PROJECT_DIR}/resource/test-qc"
+            ]
+        },
+        {
             "name": "tencent",
             "path": [
                 "{PROJECT_DIR}/resource/base",
