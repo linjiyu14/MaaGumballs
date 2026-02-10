@@ -19,8 +19,8 @@ on:
 
 # 环境变量定义，用于统一管理依赖版本
 env:
-  MAA_FRAMEWORK_VERSION: "v5.2.6"
-  MFA_AVALONIA_VERSION: "v2.2.1"
+  MAA_FRAMEWORK_VERSION: "v5.6.0"
+  MFA_AVALONIA_VERSION: "v2.6.7"
 
 permissions:
   contents: write
@@ -177,7 +177,7 @@ jobs:
           ARCHIVE_FILE_PATH="${{ fromJson(steps.download_mfa.outputs.downloaded_files)[0] }}"
           rm -f "${ARCHIVE_FILE_PATH}"
           echo "Archive cleanup command executed for MFAAvalonia on Linux."
-      
+
       - name: Download Python dependencies
         shell: bash
         run: |
@@ -251,7 +251,7 @@ jobs:
           else
             echo "Warning: Embedded Python executable not found at $EMBED_PYTHON_PATH. Skipping chmod."
           fi
-          
+
       - name: Download Python dependencies
         shell: bash
         run: |

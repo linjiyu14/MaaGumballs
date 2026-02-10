@@ -62,8 +62,8 @@ class JJC101(CustomAction):
                 context.tasker.controller.post_screencap().wait().get(),
             )
         ):
-            if RunResult.hit == False :
-                continue  
+            if RunResult.hit == False:
+                continue
             tempLayers = fightUtils.extract_num_layer(RunResult.best_result.text)
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
@@ -416,6 +416,10 @@ class JJC101(CustomAction):
                     self.isHaveSpartanHat = True
                     logger.info("已有斯巴达头盔，或找到斯巴达头盔了！！")
                     break
+            else:
+                logger.info("当前层未找到斯巴达头盔")
+        else:
+            logger.info("已找到斯巴达头盔，无需继续检查")
 
     @timing_decorator
     def handle_skillShop_event(self, context: Context, image):
@@ -424,6 +428,7 @@ class JJC101(CustomAction):
             return True
         # 打开技能商店
         if context.run_recognition("Fight_SkillShop", image).hit:
+            logger.info("检测到技能商店, 买点神秘小玩具~")
             fightUtils.handle_skillShop_event(
                 context,
                 target_skill=[
@@ -471,7 +476,7 @@ class JJC101(CustomAction):
         # boss层开始探索
         if self.layers >= 30 and self.layers % 10 == 0:
             # boss召唤动作
-            time.sleep(6)
+            time.sleep(3)
             self.handle_boss_event(context)
             fightUtils.handle_dragon_event("工资", context)
 
@@ -688,7 +693,9 @@ class JJC_CalEarning(CustomAction):
         context: Context,
         argv: CustomAction.RunArg,
     ) -> CustomAction.RunResult:
-        time.sleep(5)
+        time.sleep(2)
+        context.tasker.controller.post_click(360, 640).wait()
+        time.sleep(2)
         for _ in range(10):
             context.tasker.controller.post_click(360, 640).wait()
             time.sleep(0.5)

@@ -421,7 +421,7 @@ def checkEquipment(
     else:
         logger.info(f"未装备: {equipmentName}")
 
-    return ItemRecoDetail
+    return ItemRecoDetail.hit
 
 
 def findEquipment(
@@ -837,7 +837,9 @@ def dragonwish(targetWish: str, context: Context):
     # 神龙许愿list = ["我要获得钻石", "我要神奇的果实", "我想获得巨龙之力", "我要学习龙语魔法", "我要变得更强","我要最凶残的装备", "我要变得富有", "我要大量的矿石", "我要你的收藏品", "我要您的碎片", "我要更多的伙伴"]
 
     # # 等待8秒，确保界面加载完毕，可以考虑移除
-    time.sleep(8)
+    time.sleep(3)
+    context.tasker.controller.post_click(640, 360).wait()
+    time.sleep(3)
     textdetail = context.run_task("Fight_FindText")
     if textdetail.nodes:
         for result in textdetail.nodes[0].recognition.filtered_results:
@@ -897,7 +899,9 @@ def dragonwish(targetWish: str, context: Context):
 
         elif min_index_wish in ["我要变得富有"]:
             # 等待地图加载
-            time.sleep(10)
+            time.sleep(3)
+            context.tasker.controller.post_click(640, 360).wait()
+            time.sleep(3)
             cast_magic("火", "末日审判", context)
             for _ in range(3):
                 if not cast_magic("暗", "死亡波纹", context):
@@ -921,7 +925,9 @@ def dragonwish(targetWish: str, context: Context):
             # 等待拾取结束
         elif min_index_wish in ["我要更多的伙伴"]:
             # 等待地图加载
-            time.sleep(10)
+            time.sleep(3)
+            context.tasker.controller.post_click(640, 360).wait()
+            time.sleep(3)
             # 不清理怪物就离开，避免因为层数太高进来导致死亡
             context.run_task("Fight_ReturnMainWindow")
             time.sleep(2)
@@ -934,7 +940,9 @@ def dragonwish(targetWish: str, context: Context):
             # todo 清理当前层的逻辑
         elif min_index_wish in ["我要获得钻石"]:
             # 等待地图加载
-            time.sleep(10)
+            time.sleep(3)
+            context.tasker.controller.post_click(640, 360).wait()
+            time.sleep(3)
 
             for _ in range(110):
                 time.sleep(0.1)
@@ -954,7 +962,9 @@ def dragonwish(targetWish: str, context: Context):
             send_message("MaaGB", "冒险者大人，今日钻石已领肥家咯~")
         elif min_index_wish in ["我要大量的矿石"]:
             # 等待地图加载
-            time.sleep(10)
+            time.sleep(3)
+            context.tasker.controller.post_click(640, 360).wait()
+            time.sleep(3)
             for _ in range(13):
                 time.sleep(0.5)
                 context.tasker.controller.post_click(365, 535).wait()
@@ -1087,7 +1097,7 @@ def OpenNatureSwitch(isDefense: bool, context: Context):
 def autoOpenPicup(context: Context):
     # 测试中
     context.tasker.controller.post_touch_down(68, 661).wait()
-    time.sleep(5)
+    time.sleep(3)
     context.run_task("Fight_OpenedDoor")
     context.tasker.controller.post_touch_up().wait()
 

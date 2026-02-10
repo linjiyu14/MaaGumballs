@@ -885,7 +885,7 @@ class Mars101(CustomAction):
             #             logger.info("发现神圣重生buff, 使用祝福术尝试复活")
             #             fightUtils.cast_magic("光", "祝福术", context)
             #         else:
-            #             time.sleep(5)
+            #             time.sleep(3)
             #             break
 
             #     self.Control_TenpecentHP(context)
@@ -966,7 +966,7 @@ class Mars101(CustomAction):
         #         logger.info("可以出图了")
         #         context.run_task("Fight_FindLeaveText")
         #         # 等待6秒
-        #         time.sleep(6)
+        #         time.sleep(3)
         #         if context.run_recognition(
         #             "ConfirmButton",
         #             context.tasker.controller.post_screencap().wait().get(),
