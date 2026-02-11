@@ -212,8 +212,6 @@
                     "input_text": "贵族"
                 }
             },
-            "repeatable": true,
-            "repeat_count": 1,
             "doc": [
                 "## MaaGB全自动竞技场说明",
                 "### 自动执行功能说明",
@@ -264,8 +262,6 @@
         {
             "name": "马尔斯(测试)",
             "entry": "Mars",
-            "repeatable": true,
-            "repeat_count": 1,
             "option": [
                 "自动肉鸽时使用钻石购买体力",
                 "是否启用名导心得",
@@ -412,7 +408,9 @@
         {
             "name": "自动兑换密令",
             "entry": "AutoCdk",
-            "advanced": "AutoCdkText",
+            "option": [
+                "AutoCdkText"
+            ],
             "doc": [
                 "### 自动兑换密令",
                 " - 直接输入密令，密令之间使用, ; / 分开"
@@ -424,23 +422,24 @@
             "doc": "注意: 该node只在完成所有任务后,仅退出游戏"
         }
     ],
-    "advanced": {
+    "option": {
         "AutoCdkText": {
-            "field": [
-                "密令文本"
+            "type": "input",
+            "label": "密令文本",
+            "description": "自动兑换密令功能，输入密令之间使用, ; / 分开",
+            "inputs": [
+                {
+                    "name": "cdk_text",
+                    "default": "",
+                    "pipeline_type": "string"
+                }
             ],
-            "type": [
-                "string"
-            ],
-            "doc": "自动兑换密令功能,输入密令之间使用, ; / 分开",
             "pipeline_override": {
                 "Cdk_Sources": {
-                    "focus": "{密令文本}"
+                    "focus": "{cdk_text}"
                 }
             }
-        }
-    },
-    "option": {
+        },
         "选择神锻任务": {
             "default_case": "黑水池",
             "cases": [
@@ -479,10 +478,11 @@
             ]
         },
         "接受星光": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "SunlightTrick": {
                             "custom_action_param": {
@@ -492,7 +492,7 @@
                     }
                 },
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "SunlightTrick": {
                             "custom_action_param": {
@@ -504,10 +504,11 @@
             ]
         },
         "开启每日签到": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "DailySignIn": {
                             "enabled": false
@@ -515,7 +516,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "DailySignIn": {
                             "enabled": true
@@ -525,10 +526,11 @@
             ]
         },
         "开启荒野探索": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "WildernessExplore": {
                             "enabled": false
@@ -536,7 +538,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "WildernessExplore": {
                             "enabled": true
@@ -546,10 +548,11 @@
             ]
         },
         "开启马戏团任务": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "CircusTask": {
                             "enabled": false
@@ -557,7 +560,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "CircusTask": {
                             "enabled": true
@@ -567,10 +570,11 @@
             ]
         },
         "开启每日扫荡": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "DailySweep": {
                             "enabled": false
@@ -578,7 +582,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "DailySweep": {
                             "enabled": true
@@ -588,10 +592,11 @@
             ]
         },
         "开启派遣魔蜥": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "SendLizards": {
                             "enabled": false
@@ -599,7 +604,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "SendLizards": {
                             "enabled": true
@@ -609,10 +614,11 @@
             ]
         },
         "开启领取炼金招牌": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "AlchemySignboard": {
                             "enabled": false
@@ -620,7 +626,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "AlchemySignboard": {
                             "enabled": true
@@ -630,10 +636,11 @@
             ]
         },
         "开启天空扫荡": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "SkyExplore": {
                             "enabled": false
@@ -641,7 +648,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "SkyExplore": {
                             "enabled": true
@@ -651,10 +658,11 @@
             ]
         },
         "开启遗迹扫荡": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "RuinsExplore": {
                             "enabled": false
@@ -662,7 +670,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "RuinsExplore": {
                             "enabled": true
@@ -672,10 +680,11 @@
             ]
         },
         "开启天空周副本": {
-            "default_case": "yes",
+            "type": "switch",
+            "default_case": "Yes",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "WeeklyRaid": {
                             "enabled": false
@@ -683,7 +692,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "WeeklyRaid": {
                             "enabled": true
@@ -693,10 +702,11 @@
             ]
         },
         "扫荡时使用钻石购买体力": {
-            "default_case": "no",
+            "type": "switch",
+            "default_case": "No",
             "cases": [
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "EntryEden": {
                             "custom_action_param": {
@@ -711,7 +721,7 @@
                     }
                 },
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "EntryEden": {
                             "custom_action_param": {
@@ -728,9 +738,10 @@
             ]
         },
         "自动肉鸽时使用钻石购买体力": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "PowerBuy": {
                             "enabled": false
@@ -738,7 +749,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "PowerBuy": {
                             "enabled": true
@@ -748,10 +759,11 @@
             ]
         },
         "开启自动拾取": {
-            "default_case": "no",
+            "type": "switch",
+            "default_case": "No",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "Fight_PickUpAll_Emptyfloor": {
                             "enabled": false
@@ -759,7 +771,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "Fight_PickUpAll_Emptyfloor": {
                             "enabled": true
@@ -769,6 +781,7 @@
             ]
         },
         "魔法系冈布奥选择": {
+            "type": "select",
             "cases": [
                 {
                     "name": "天启者",
@@ -861,9 +874,10 @@
             ]
         },
         "是否启用手记开启恶魔系称号": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "Mars_Astrological_Title_Setting": {
                             "expected": "false"
@@ -871,7 +885,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "Mars_Astrological_Title_Setting": {
                             "expected": "true"
@@ -881,10 +895,11 @@
             ]
         },
         "是否手动结算": {
-            "default_case": "no",
+            "type": "switch",
+            "default_case": "No",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "Fight_ManualLeave": {
                             "enabled": false
@@ -892,7 +907,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "Fight_ManualLeave": {
                             "enabled": true
@@ -902,9 +917,10 @@
             ]
         },
         "是否启用名导心得": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "Mars_Director_Title_Setting": {
                             "expected": "false"
@@ -912,7 +928,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "Mars_Director_Title_Setting": {
                             "expected": "true"
@@ -1161,9 +1177,10 @@
             ]
         },
         "是否探索废墟等事件": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "TSD_CheckExploreTask": {
                             "enabled": false
@@ -1171,7 +1188,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "TSD_CheckExploreTask": {
                             "enabled": true
@@ -1181,9 +1198,10 @@
             ]
         },
         "是否清理主地图小怪": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "TSD_CheckMonsterTask": {
                             "enabled": false
@@ -1191,7 +1209,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "TSD_CheckMonsterTask": {
                             "enabled": true
@@ -1201,9 +1219,10 @@
             ]
         },
         "是否清理主地图BOSS": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "TSD_CheckMonsterBossTask": {
                             "enabled": false
@@ -1211,7 +1230,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "TSD_CheckMonsterBossTask": {
                             "enabled": true
@@ -1221,9 +1240,10 @@
             ]
         },
         "是否清理星球小怪": {
+            "type": "switch",
             "cases": [
                 {
-                    "name": "no",
+                    "name": "No",
                     "pipeline_override": {
                         "TSD_CheckMonsterPlanetTask": {
                             "enabled": false
@@ -1231,7 +1251,7 @@
                     }
                 },
                 {
-                    "name": "yes",
+                    "name": "Yes",
                     "pipeline_override": {
                         "TSD_CheckMonsterPlanetTask": {
                             "enabled": true
