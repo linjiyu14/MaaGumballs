@@ -144,7 +144,7 @@ class Eastern_Activity(CustomAction):
 
                 if self.received_count > 1:
                     context.run_task("Bag_Open")
-                    if fightUtils.findItem("钞票", False, context):
+                    if not fightUtils.findItem("钞票", False, context):
                         logger.info("没领到工资，再领一次")
                         context.run_task("Eastern_Receive_Salary")
                     context.run_task("Fight_ReturnMainWindow")
