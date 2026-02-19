@@ -1332,6 +1332,27 @@
                     }
                 }
             ]
+        },
+        "选择携带药剂": {
+            "default_case": "电能试剂",
+            "cases": [
+                {
+                    "name": "电能试剂",
+                    "pipeline_override": {
+                        "Select_Drug_Next": {
+                            "template": "items/电能试剂.png"
+                        }
+                    }
+                },
+                {
+                    "name": "秘法之水",
+                    "pipeline_override": {
+                        "Select_Drug_Next": {
+                            "template": "items/秘法之水.png"
+                        }
+                    }
+                }
+            ]
         }
     }
 }
