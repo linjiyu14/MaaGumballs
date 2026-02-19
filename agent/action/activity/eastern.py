@@ -48,6 +48,45 @@ class Eastern_Activity(CustomAction):
         )
         context.run_task("Fight_OpenedDoor")
 
+    def handle_interrupt_event(self, context: Context):
+        image = context.tasker.controller.post_screencap().wait().get()
+        if context.run_recognition("Fight_FindRespawn", image).hit:
+            logger.info("检测到死亡， 尝试小SL")
+            fightUtils.Saveyourlife(context)
+            fightUtils.cast_magic("水", "治疗术", context)
+            fightUtils.cast_magic("土", "石肤术", context)
+            return False
+
+        if context.run_recognition(
+            "Eastern_Inter_Confirm_Success",
+            image,
+        ).hit:
+            logger.info("检测到卡剧情, 本层重新探索")
+            context.run_task("Eastern_Inter_Confirm_Success")
+            return False
+
+        if context.run_recognition(
+            "Eastern_Inter_Confirm_Fail",
+            image,
+        ).hit:
+            if context.run_recognition("Fight_FindRespawn", image).hit:
+                logger.info("检测到死亡， 尝试小SL")
+                fightUtils.Saveyourlife(context)
+                fightUtils.cast_magic("水", "治疗术", context)
+                fightUtils.cast_magic("土", "石肤术", context)
+                return False
+            logger.info("检测到卡离开, 本层重新探索")
+            context.run_task("Eastern_Inter_Confirm_Fail")
+            return False
+
+        # 检测卡返回
+        if context.run_recognition("BackText", image).hit:
+            logger.info("检测到卡返回, 本层重新探索")
+            context.run_task("Fight_ReturnMainWindow")
+            return False
+
+        return True
+
     # 执行函数
     def run(
         self,
@@ -200,6 +239,10 @@ class Eastern_Activity(CustomAction):
 
                 return CustomAction.RunResult(success=True)
 
+            # 检查是否触发中断事件
+
+            if not self.handle_interrupt_event(context):
+                continue
         return CustomAction.RunResult(success=True)
 
 

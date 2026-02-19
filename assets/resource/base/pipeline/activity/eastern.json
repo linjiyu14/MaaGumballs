@@ -6,7 +6,7 @@
             "Eastern_Fighting",
             "[JumpBack]AlchemyReward",
             "[JumpBack]MapIsTop",
-            "[JumpBack]MapSwipeUpToDown"
+            "[JumpBack]MapSwipeDownToUp"
         ]
     },
     "Eastern_Entry": {
@@ -343,7 +343,7 @@
     "Eastern_Enter_Train": {
         "recognition": "DirectHit",
         "action": "Click",
-        "post_delay": 2000,
+        "post_delay": 3000,
         "timeout": 2000,
         "roi": [
             342,
@@ -415,5 +415,37 @@
             85,
             45
         ]
+    },
+    "Eastern_Inter_Confirm_Success": {
+        "recognition": "OCR",
+        "expected": [
+            "赏花灯",
+            "进入",
+            "加入"
+        ],
+        "roi": [
+            29,
+            545,
+            652,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "Eastern_Inter_Confirm_Fail": {
+        "recognition": "OCR",
+        "expected": [
+            "离开"
+        ],
+        "roi": [
+            29,
+            545,
+            652,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
     }
 }
