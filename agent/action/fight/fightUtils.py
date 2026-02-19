@@ -610,12 +610,14 @@ def openBagAndUseItem(
     isUse: bool,
     context: Context,
     isReturnMainWindow: bool = True,
+    dst_x: int = 0,
+    dst_y: int = 0,
 ):
     context.run_task("Fight_ReturnMainWindow")
     OpenDetail = context.run_task("Bag_Open")
     if OpenDetail:
         time.sleep(1)
-        findItem(equipmentName, isUse, context)
+        findItem(equipmentName, isUse, context, dst_x, dst_y)
     time.sleep(1)
     if isReturnMainWindow:
         context.run_task("Fight_ReturnMainWindow")

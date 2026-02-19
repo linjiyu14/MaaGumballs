@@ -3,6 +3,7 @@ from action.fight import mars101
 from action.fight import getKeyFromHole
 from action.fight import timeSpaceDomain
 from action.activity import kairo_maze1
+from action.activity import eastern
 
 from action import count
 from action import dailyTask
