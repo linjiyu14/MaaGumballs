@@ -6,7 +6,7 @@ from utils import logger, send_message
 from action.fight import fightUtils
 from action.fight import fightProcessor
 
-import json, time
+import json, time, re
 
 boss_x = 360
 boss_y = 680
@@ -18,6 +18,7 @@ class Eastern_Activity(CustomAction):
         super().__init__()
         self.layers = 1
         self.received = False
+        self.received_count = 0
 
     def initialize(self, context: Context):
         self.__init__()
@@ -87,15 +88,28 @@ class Eastern_Activity(CustomAction):
 
         return True
 
+    def get_drug_name(self, name):
+        match = re.search(r"/([^/.]+)\.", name)
+
+        if match:
+            result = match.group(1)
+            return result
+        else:
+            return ""
+
     # 执行函数
     def run(
         self,
         context: Context,
         argv: CustomAction.RunArg,
     ) -> CustomAction.RunResult:
-        logger.info("成功进入迷宫")
+        # logger.info("成功进入迷宫")
         self.initialize(context)
-
+        drugs = context.get_node_data("Select_Drug_Next")["recognition"]["param"][
+            "template"
+        ][0]
+        self.drug = self.get_drug_name(drugs)
+        # logger.info(fightUtils.openBagAndUseItem("wages", False, context))
         while self.layers < 7:
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
@@ -122,12 +136,18 @@ class Eastern_Activity(CustomAction):
                     for _ in range(4):
                         context.run_task("Eastern_Talk_Confirm")
                         time.sleep(0.02)
-
+                self.received_count += 1
                 logger.info("领取工资")
                 if not self.received:
                     context.run_task("Eastern_Receive_Salary")
                     self.received = True
 
+                if self.received_count > 1:
+                    context.run_task("Bag_Open")
+                    if not fightUtils.findItem("钞票", False, context):
+                        logger.info("没领到工资，再领一次")
+                        context.run_task("Eastern_Receive_Salary")
+                    context.run_task("Fight_ReturnMainWindow")
                 context.run_task("Fight_OpenedDoor")
             elif self.layers < 5:
                 self.handle_ClearMonster(context)
@@ -191,7 +211,6 @@ class Eastern_Activity(CustomAction):
                     for _ in range(3):
                         context.run_task("Eastern_Talk_Confirm")
                         time.sleep(0.02)
-
                 fightUtils.cast_magic_special("摄魂魔法", context)
                 fightUtils.cast_magic_special("记忆标本", context)
                 fightUtils.openBagAndUseItem(
@@ -203,12 +222,22 @@ class Eastern_Activity(CustomAction):
                 fightUtils.openBagAndUseItem(
                     "记忆标本", True, context, True, boss_x, boss_y
                 )
-                fightUtils.openBagAndUseItem("电能试剂", True, context)
-                fightUtils.cast_magic_special("摄魂魔法", context)
-                fightUtils.cast_magic_special("记忆标本", context)
-                fightUtils.openBagAndUseItem(
-                    "记忆标本", True, context, True, boss_x, boss_y
-                )
+                if self.drug == "电能试剂":
+                    fightUtils.openBagAndUseItem("电能试剂", True, context)
+                    fightUtils.cast_magic_special("摄魂魔法", context)
+                    fightUtils.cast_magic_special("记忆标本", context)
+                    fightUtils.openBagAndUseItem(
+                        "记忆标本", True, context, True, boss_x, boss_y
+                    )
+                elif self.drug == "秘法之水":
+                    for _ in range(5):
+                        fightUtils.openBagAndUseItem("秘法之水", True, context)
+                        fightUtils.cast_magic_special("摄魂魔法", context)
+                        fightUtils.cast_magic_special("记忆标本", context)
+                        fightUtils.openBagAndUseItem(
+                            "记忆标本", True, context, True, boss_x, boss_y
+                        )
+
                 fightUtils.openBagAndUseItem("灵魂", True, context)
 
                 context.run_task("Eastern_Buy_Ticket")
@@ -236,6 +265,8 @@ class Eastern_Activity(CustomAction):
                     logger.info(f"获得红包 {count} 个。")
 
                 context.run_task("BackText")
+                time.sleep(2)
+                context.run_task("AlchemyReward")
 
                 return CustomAction.RunResult(success=True)
 
@@ -243,6 +274,7 @@ class Eastern_Activity(CustomAction):
 
             if not self.handle_interrupt_event(context):
                 continue
+
         return CustomAction.RunResult(success=True)
 
 

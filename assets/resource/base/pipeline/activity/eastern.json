@@ -4,9 +4,7 @@
         "next": [
             "Eastern_Entry",
             "Eastern_Fighting",
-            "[JumpBack]AlchemyReward",
-            "[JumpBack]MapIsTop",
-            "[JumpBack]MapSwipeDownToUp"
+            "[JumpBack]AlchemyReward"
         ]
     },
     "Eastern_Entry": {
@@ -156,12 +154,26 @@
         "post_delay": 500,
         "timeout": 2000,
         "next": [
-            "Eastern_Receive_Salary_Confirm"
+            "Eastern_Receive_Salary_Confirm",
+            "Eastern_REceive_Salary_leave"
         ]
     },
     "Eastern_Receive_Salary_Confirm": {
         "recognition": "OCR",
         "expected": "领取工资",
+        "roi": [
+            267,
+            799,
+            192,
+            66
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_REceive_Salary_leave": {
+        "recognition": "OCR",
+        "expected": "离开",
         "roi": [
             267,
             799,
