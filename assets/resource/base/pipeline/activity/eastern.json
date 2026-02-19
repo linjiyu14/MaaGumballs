@@ -1,0 +1,451 @@
+{
+    "Eastern_Start": {
+        "post_delay": 1000,
+        "next": [
+            "Eastern_Entry",
+            "Eastern_Fighting",
+            "[JumpBack]AlchemyReward",
+            "[JumpBack]MapIsTop",
+            "[JumpBack]MapSwipeDownToUp"
+        ]
+    },
+    "Eastern_Entry": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/entry.png",
+        "roi": [
+            7,
+            155,
+            705,
+            887
+        ],
+        "action": "Click",
+        "next": [
+            "Eastern_Enter",
+            "[JumpBack]Eastern_OCR_EasyMode",
+            "[JumpBack]Eastern_WayBack",
+            "[JumpBack]Eastern_Newyear_Activity",
+            "[JumpBack]Eastern_limitedTime_Activity"
+        ],
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "Eastern_Enter": {
+        "recognition": "OCR",
+        "expected": "进入(.*?)迷宫",
+        "roi": [
+            194,
+            880,
+            209,
+            76
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Fighting",
+            "[JumpBack]GameLoading"
+        ]
+    },
+    "Eastern_Fighting": {
+        "recognition": "TemplateMatch",
+        "template": "fight/UniversalUI/MazePackage.png",
+        "action": "Custom",
+        "custom_action": "Eastern_Activity",
+        "roi": [
+            47,
+            1147,
+            136,
+            117
+        ]
+    },
+    "Eastern_limitedTime_Activity": {
+        "recognition": "OCR",
+        "expected": "限时活动",
+        "roi": [
+            436,
+            152,
+            118,
+            49
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Newyear_Activity": {
+        "recognition": "OCR",
+        "expected": "新年庆典",
+        "roi": [
+            125,
+            261,
+            151,
+            51
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_WayBack": {
+        "recognition": "OCR",
+        "expected": "东方的归途",
+        "roi": [
+            212,
+            898,
+            127,
+            49
+        ],
+        "action": "Click",
+        "post_delay": 1500,
+        "timeout": 2000
+    },
+    "Eastern_OCR_EasyMode": {
+        "recognition": "OCR",
+        "expected": "简单模式",
+        "roi": [
+            72,
+            634,
+            191,
+            57
+        ],
+        "action": "DoNothing",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Select_Drug",
+            "[JumpBack]Eastern_Select_EasyMode",
+            "[JumpBack]PowerLack",
+            "[JumpBack]ConfirmButton",
+            "[JumpBack]ClickCenterBelow_500ms"
+        ]
+    },
+    "Eastern_Select_EasyMode": {
+        "recognition": "OCR",
+        "expected": "简单模式",
+        "roi": [
+            72,
+            634,
+            191,
+            57
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Select_EasyMode_Check": {
+        "recognition": "TemplateMatch",
+        "template": "items/电能试剂.png",
+        "roi": [
+            31,
+            529,
+            664,
+            313
+        ],
+        "action": "DoNothing",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Receive_Salary": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/monkey.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Receive_Salary_Confirm"
+        ]
+    },
+    "Eastern_Receive_Salary_Confirm": {
+        "recognition": "OCR",
+        "expected": "领取工资",
+        "roi": [
+            267,
+            799,
+            192,
+            66
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Handoff": {
+        "recognition": "OCR",
+        "expected": "挂断",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 1000
+    },
+    "Eastern_Fight_clearCurrentLayer": {
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "Eastern_Fight_clearCurrentLayer",
+        "custom_action_param": {
+            "layers": 1
+        },
+        "post_delay": 300,
+        "timeout": 1000
+    },
+    "Eastern_Enter_Market": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/market.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Enter_Market_Confirm"
+        ]
+    },
+    "Eastern_Enter_Market_Confirm": {
+        "recognition": "OCR",
+        "expected": "进入",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Enter_Market_Check",
+            "[JumpBack]Fight_DownStaris_Loading"
+        ]
+    },
+    "Eastern_Enter_Market_Check": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/monkey2.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "DoNothing",
+        "post_delay": 500,
+        "timeout": 3000
+    },
+    "Eastern_Buy_One": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/shop5.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Buy_One_Confirm"
+        ]
+    },
+    "Eastern_Buy_One_Confirm": {
+        "recognition": "OCR",
+        "expected": "购买",
+        "roi": [
+            245,
+            791,
+            272,
+            89
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "Eastern_Buy_All": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/shop1.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Buy_All_AddButton": {
+        "recognition": "TemplateMatch",
+        "template": "fight/Mars/MarsExchangeShop_ClickAddButton.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_Buy_Ticket": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/boss.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Buy_Ticket_Confirm"
+        ]
+    },
+    "Eastern_Buy_Ticket_Confirm": {
+        "recognition": "OCR",
+        "expected": "买票",
+        "roi": [
+            105,
+            717,
+            249,
+            224
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "Eastern_Leave": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/villageHead.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "next": [
+            "Eastern_Leave_Confirm"
+        ]
+    },
+    "Eastern_Enter_Train": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 2000,
+        "roi": [
+            342,
+            284,
+            40,
+            46
+        ]
+    },
+    "Eastern_Leave_Confirm": {
+        "recognition": "OCR",
+        "expected": "新年快乐",
+        "roi": [
+            260,
+            806,
+            153,
+            59
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 2000
+    },
+    "Eastern_Leave_holl": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "post_delay": 1500,
+        "timeout": 2000,
+        "roi": [
+            324,
+            411,
+            58,
+            46
+        ]
+    },
+    "Eastern_cacl_count": {
+        "recognition": "TemplateMatch",
+        "template": "fight/eastern/红包.png",
+        "roi": [
+            12,
+            216,
+            700,
+            758
+        ],
+        "action": "DoNothing",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "Eastern_get_count": {
+        "recognition": "OCR",
+        "expected": "\\d+",
+        "roi": [
+            108,
+            292,
+            72,
+            51
+        ],
+        "replace": [
+            "\\.|\\,",
+            ""
+        ]
+    },
+    "Eastern_Talk_Confirm": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000,
+        "roi": [
+            320,
+            930,
+            85,
+            45
+        ]
+    },
+    "Eastern_Inter_Confirm_Success": {
+        "recognition": "OCR",
+        "expected": [
+            "赏花灯",
+            "进入",
+            "加入"
+        ],
+        "roi": [
+            29,
+            545,
+            652,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "Eastern_Inter_Confirm_Fail": {
+        "recognition": "OCR",
+        "expected": [
+            "离开"
+        ],
+        "roi": [
+            29,
+            545,
+            652,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    }
+}
