@@ -265,13 +265,9 @@
             "repeatable": true,
             "repeat_count": 1,
             "option": [
-                "自动肉鸽时使用钻石购买体力"
+                "自动肉鸽时使用钻石购买体力",
+                "选择携带药剂"
             ],
-            "pipeline_override": {
-                "Select_Drug_Next": {
-                    "template": "items/电能试剂.png"
-                }
-            },
             "doc": [
                 "## MaaGB自动东方归途说明",
                 "### 自动执行功能说明",
@@ -290,6 +286,8 @@
         {
             "name": "马尔斯(测试)",
             "entry": "Mars",
+            "repeatable": true,
+            "repeat_count": 1,
             "option": [
                 "自动肉鸽时使用钻石购买体力",
                 "是否启用名导心得",

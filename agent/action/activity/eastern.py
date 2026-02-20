@@ -147,6 +147,11 @@ class Eastern_Activity(CustomAction):
                     if not fightUtils.findItem("钞票", False, context):
                         logger.info("没领到工资，再领一次")
                         context.run_task("Eastern_Receive_Salary")
+                        if self.received_count > 5:
+                            send_message(
+                                "MaaGB", "多次领取工资失败，请冒险者大人回来重启任务！"
+                            )
+                            return CustomAction.RunResult(success=False)
                     context.run_task("Fight_ReturnMainWindow")
                 context.run_task("Fight_OpenedDoor")
             elif self.layers < 5:
