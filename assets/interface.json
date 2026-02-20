@@ -290,6 +290,8 @@
         {
             "name": "马尔斯(测试)",
             "entry": "Mars",
+            "repeatable": true,
+            "repeat_count": 1,
             "option": [
                 "自动肉鸽时使用钻石购买体力",
                 "是否启用名导心得",
