@@ -315,7 +315,7 @@ class TSD_explore(CustomAction):
 
     def swipeMapToBottomRight(self, context: Context):
         for _ in range(4):
-            context.run_task("FD_SwipMapMiddleToBottomRight")
+            context.run_task("FD_SwipeMapMiddleToBottomRight")
             time.sleep(1)
         self.direction = "Left"
         self.isUp = False
