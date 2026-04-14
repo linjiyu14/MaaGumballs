@@ -30,9 +30,9 @@ class TSD_explore(CustomAction):
         self.default_fleets = ["奥鲁维", "卡纳斯", "游荡者", "深渊"]  # 默认舰队顺序
         self.fight_fleets = []  # 根据选择的舰队数量按战力大小排列的舰队列表
         self.fleet_list = []  # 当前可用的舰队列表
-        self.check = False  # 是否从左上角开始检查
-        self.direction = "Right"  # 移动方向
-        self.isDown = False  # 是否下移过一次
+        self.check = False  # 是否从右下角开始检查
+        self.direction = "Left"  # 移动方向
+        self.isUp = False  # 是否上移过一次
         self.planetList: list = []  # 记录探索的星球
 
     # 获取舰队战力值
@@ -259,9 +259,11 @@ class TSD_explore(CustomAction):
     def checkBoundary(self, context: Context, direction: str) -> bool:
         boundaryRoiDict: dict = {
             "LeftTop": [12, 268, 137, 147],
+            "RightTop": [549, 276, 161, 147],
             "Right": [597, 272, 96, 871],
             "Left": [14, 275, 116, 766],
             "RightBottom": [590, 1052, 117, 102],
+            "LeftBottom": [9, 1011, 145, 125],
         }
         img = context.tasker.controller.post_screencap().wait().get()
         boundaryList = context.run_recognition(
@@ -308,13 +310,21 @@ class TSD_explore(CustomAction):
                 context.run_task("FD_SwipeMapMiddleToTopLeft")
             time.sleep(1)
         self.direction = "Right"
-        self.isDown = False
+        self.isUp = False
+        time.sleep(1)
+
+    def swipeMapToBottomRight(self, context: Context):
+        for _ in range(4):
+            context.run_task("FD_SwipMapMiddleToBottomRight")
+            time.sleep(1)
+        self.direction = "Left"
+        self.isUp = False
         time.sleep(1)
 
     def swipeMap(self, context: Context) -> bool:
         if self.checkBoundary(context, self.direction):
             logger.info(f"地图{self.direction}边界")
-            if self.checkBoundary(context, "RightBottom"):
+            if self.checkBoundary(context, "LeftTop"):
                 logger.info("已到达地图边界")
                 if self.check:
                     self.check = False
@@ -322,20 +332,20 @@ class TSD_explore(CustomAction):
                 else:
                     # 返回地图左上角重新检查一遍
                     self.check = True
-                    self.swipeMapToLeftTop(context)
-            elif not self.isDown:  # 未达到右下角，地图下移一次
-                logger.info("地图下移")
-                context.run_task("FD_SwipeMapToDown")
+                    self.swipeMapToBottomRight(context)
+            elif not self.isUp:  # 未达到右下角，地图上移一次
+                logger.info("地图上移")
+                context.run_task("FD_SwipeMapToUp")
                 self.direction = "Left" if self.direction == "Right" else "Right"
-                self.isDown = True
+                self.isUp = True
                 time.sleep(1)
-            else:  # 已经下移过一次，按direction移动一次
+            else:  # 已经上移过一次，按direction移动一次
                 logger.info("地图移动")
                 if self.direction == "Right":
                     context.run_task("FD_SwipeMapToRight")
                 else:
                     context.run_task("FD_SwipeMapToLeft")
-                self.isDown = False
+                self.isUp = False
                 time.sleep(1)
         else:  # 未达到边界，地图按当前direction继续移动一次
             logger.info("地图移动")
@@ -343,7 +353,7 @@ class TSD_explore(CustomAction):
                 context.run_task("FD_SwipeMapToRight")
             else:
                 context.run_task("FD_SwipeMapToLeft")
-            self.isDown = False
+            self.isUp = False
             time.sleep(2)
         return True
 
@@ -353,8 +363,8 @@ class TSD_explore(CustomAction):
     ) -> bool | CustomAction.RunResult:
 
         if taskType in ["monster_boss", "planet"]:
-            # 这两个任务直接可以从左上角开始检测
-            self.swipeMapToLeftTop(context)
+            # 这两个任务直接可以从右下角开始检测
+            self.swipeMapToBottomRight(context)
 
         flag = True
         # 检查是否存在目标

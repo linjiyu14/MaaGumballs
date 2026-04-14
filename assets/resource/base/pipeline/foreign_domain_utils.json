@@ -17,6 +17,24 @@
         "duration": 500,
         "post_delay": 1000
     },
+    "FD_SwipMapMiddleToBottomRight": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            675,
+            1104,
+            44,
+            43
+        ],
+        "end": [
+            273,
+            675,
+            49,
+            49
+        ],
+        "duration": 500,
+        "post_delay": 1000
+    },
     "FD_SwipeMapToRight": {
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -65,6 +83,24 @@
         "end": [
             360,
             743,
+            42,
+            40
+        ],
+        "duration": 500,
+        "post_delay": 1000
+    },
+    "FD_SwipeMapToUp": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            360,
+            743,
+            42,
+            40
+        ],
+        "end": [
+            360,
+            1096,
             42,
             40
         ],
