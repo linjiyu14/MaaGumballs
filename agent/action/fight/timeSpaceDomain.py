@@ -165,7 +165,7 @@ class TSD_explore(CustomAction):
         )
         if exploreList.hit:
             self.exploreNums = len(exploreList.filtered_results)
-            self.check = False  # 存在目标，需要在运行到右下角时从左上角开始检查
+            self.check = False  # 存在目标，需要在运行到左上角时从右下角开始检查
             return exploreList.filtered_results
         else:
             self.exploreNums = 0
@@ -333,7 +333,7 @@ class TSD_explore(CustomAction):
                     # 返回地图左上角重新检查一遍
                     self.check = True
                     self.swipeMapToBottomRight(context)
-            elif not self.isUp:  # 未达到右下角，地图上移一次
+            elif not self.isUp:  # 未达到左上角，地图上移一次
                 logger.info("地图上移")
                 context.run_task("FD_SwipeMapToUp")
                 self.direction = "Left" if self.direction == "Right" else "Right"
