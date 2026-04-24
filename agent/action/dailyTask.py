@@ -64,8 +64,32 @@ class DailyTask(CustomAction):
 @AgentServer.custom_action("WeeklyRaidFighting")
 class WeeklyRaidFighting(CustomAction):
     def __init__(self):
-        self.weeklyRaidList = ["永恒王座"]
+        self.weeklyRaidList = ["永恒王座", "六重天"]
         super().__init__()
+        # 这个做成一个map，通过我们的副本名称一个string来映射一个string列表
+        self.MonsterCheckPath: str = "dailyTask/weeklyRaid/"
+        self.MonsterList1 = [
+            self.MonsterCheckPath + "永恒王座冈布奥1.png",
+            self.MonsterCheckPath + "永恒王座冈布奥2.png",
+            self.MonsterCheckPath + "永恒王座冈布奥3.png",
+            self.MonsterCheckPath + "永恒王座冈布奥4.png",
+            self.MonsterCheckPath + "永恒王座冈布奥5.png",
+            self.MonsterCheckPath + "永恒王座冈布奥6.png",
+            self.MonsterCheckPath + "永恒王座冈布奥7.png",
+        ]
+        self.MonsterList2 = [
+            self.MonsterCheckPath + "六重天冈布奥1.png",
+            self.MonsterCheckPath + "六重天冈布奥2.png",
+            self.MonsterCheckPath + "六重天冈布奥3.png",
+            self.MonsterCheckPath + "六重天冈布奥4.png",
+            self.MonsterCheckPath + "六重天冈布奥5.png",
+            self.MonsterCheckPath + "六重天冈布奥6.png",
+            self.MonsterCheckPath + "六重天冈布奥7.png",
+        ]
+        self.MonsterMap = {
+            "永恒王座": self.MonsterList1,
+            "六重天": self.MonsterList2,
+        }
 
     def run(
         self, context: Context, argv: CustomAction.RunArg
@@ -86,21 +110,24 @@ class WeeklyRaidFighting(CustomAction):
 
         # 2. 执行战斗, 一共6~7轮
         for i in range(12):
+            logger.info(f"第{i+1}/12轮识别怪物")
             if MonsterReco := context.run_recognition(
                 "WeeklyRaid_MonsterCheck",
                 context.tasker.controller.post_screencap().wait().get(),
+                pipeline_override={
+                    "WeeklyRaid_MonsterCheck": {"template": self.MonsterMap[taskName]}
+                },
             ):
-                if not MonsterReco.hit:
-                    break
-                for item in MonsterReco.all_results:
+                if MonsterReco.hit:
                     # 2.1 点开怪物
-                    box = item.box
-                    center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
-                    context.tasker.controller.post_click(center_x, center_y).wait()
-                    time.sleep(1)
-                    # 2.2 袭击怪物
-                    context.run_task("WeeklyRaid_Attack")
-            context.run_task("WeeklyRaid_SwipeToRight")
+                    for item in MonsterReco.filtered_results:
+                        box = item.box
+                        center_x, center_y = box[0] + box[2] // 2, box[1] + box[3] // 2
+                        context.tasker.controller.post_click(center_x, center_y).wait()
+                        time.sleep(0.5)
+                        # 2.2 袭击怪物
+                        context.run_task("WeeklyRaid_Attack")
+                context.run_task("WeeklyRaid_SwipeToRight")
 
         return CustomAction.RunResult(success=True)
 

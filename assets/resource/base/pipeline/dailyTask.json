@@ -865,7 +865,10 @@
     },
     "WeeklyRaid": {
         "recognition": "TemplateMatch",
-        "template": "dailyTask/WeeklyRaid.png",
+        "template": [
+            "dailyTask/weeklyRaid/永恒王座入口.png",
+            "dailyTask/weeklyRaid/六重天入口.png"
+        ],
         "threshold": 0.8,
         "roi": [
             47,
@@ -888,7 +891,8 @@
     "WeeklyRaid_Check": {
         "recognition": "OCR",
         "expected": [
-            "永恒王座"
+            "永恒王座",
+            "六重天"
         ],
         "roi": [
             38,
@@ -916,7 +920,8 @@
             262,
             625,
             846
-        ]
+        ],
+        "timeout": 2000
     },
     "WeeklyRaid_Attack": {
         "recognition": "OCR",
@@ -977,7 +982,10 @@
     },
     "WeeklyRaid_Attack_Reward": {
         "recognition": "TemplateMatch",
-        "template": "dailyTask/weeklyRaid/永恒王座彩蛋.png",
+        "template": [
+            "dailyTask/weeklyRaid/永恒王座彩蛋.png",
+            "dailyTask/weeklyRaid/六重天彩蛋.png"
+        ],
         "roi": [
             158,
             625,
