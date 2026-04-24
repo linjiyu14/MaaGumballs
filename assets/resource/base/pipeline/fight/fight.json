@@ -396,7 +396,7 @@
     "Fight_Magic_Elemental": {
         "next": [
             "Fight_ClickLightMagicPage",
-            "Fight_FindDragon",
+            "Fight_FindDragonV2",
             "[JumpBack]Fight_SkillPack_Type",
             "[JumpBack]Fight_SkillPack_Open"
         ],
@@ -422,7 +422,7 @@
     "Fight_Magic_Special": {
         "next": [
             "Fight_ClickSpecialMagicPage",
-            "Fight_FindDragon",
+            "Fight_FindDragonV2",
             "Fight_FindRespawn",
             "[JumpBack]Fight_SkillPack_Open"
         ],
@@ -605,39 +605,40 @@
         "post_delay": 200,
         "timeout": 2000
     },
-    "Fight_FindDragon": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "fight/UniversalUI/DragonWish3.png",
-            "fight/UniversalUI/DragonWish2.png"
-        ],
-        "roi": [
-            158,
-            112,
-            415,
-            623
+    "Fight_FindDragonV2": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "sub_name": "dragon1",
+                "recognition": "TemplateMatch",
+                "template": [
+                    "fight/UniversalUI/DragonWish3.png",
+                    "fight/UniversalUI/DragonWish2.png"
+                ],
+                "roi": [
+                    158,
+                    112,
+                    415,
+                    623
+                ],
+                "threshold": 0.6
+            },
+            {
+                "recognition": "OCR",
+                "expected": "(我想|我要|我需).*",
+                "roi": [
+                    21,
+                    217,
+                    682,
+                    762
+                ]
+            }
         ],
         "action": "DoNothing",
         "post_delay": 500,
         "timeout": 2000
     },
-    "Fight_FindDragon_Next": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "fight/UniversalUI/DragonWish2.png"
-        ],
-        "roi": [
-            164,
-            116,
-            377,
-            342
-        ],
-        "action": "DoNothing",
-        "post_delay": 500,
-        "threshold": 0.8,
-        "timeout": 10000
-    },
-    "Fight_FindText": {
+    "Fight_FindDragonText": {
         "recognition": "OCR",
         "expected": "(我想|我要|我需).*",
         "roi": [
@@ -647,7 +648,7 @@
             762
         ],
         "action": "DoNothing",
-        "post_delay": 1000,
+        "post_delay": 500,
         "threshold": 0.8,
         "timeout": 3000
     },

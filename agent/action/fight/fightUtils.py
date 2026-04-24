@@ -89,7 +89,7 @@ def cast_magic(Type: str, MagicName: str, context: Context, TargetPos: tuple = (
             "Fight_Magic_Elemental": {
                 "next": [
                     MagicType[Type],
-                    "Fight_FindDragon",
+                    "Fight_FindDragonV2",
                     "Fight_FindRespawn",
                     "[JumpBack]Fight_SkillPack_Type",
                     "[JumpBack]Fight_SkillPack_Open",
@@ -159,7 +159,7 @@ def check_magic(Type: str, MagicName: str, context: Context):
             "Fight_Magic_Elemental": {
                 "next": [
                     MagicType[Type],
-                    "Fight_FindDragon",
+                    "Fight_FindDragonV2",
                     "Fight_FindRespawn",
                     "[JumpBack]Fight_SkillPack_Type",
                     "[JumpBack]Fight_SkillPack_Open",
@@ -842,7 +842,7 @@ def dragonwish(targetWish: str, context: Context):
     time.sleep(3)
     context.tasker.controller.post_click(640, 360).wait()
     time.sleep(3)
-    textdetail = context.run_task("Fight_FindText")
+    textdetail = context.run_task("Fight_FindDragonText")
     if textdetail.nodes:
         for result in textdetail.nodes[0].recognition.filtered_results:
             if result.text.endswith("！") or result.text.endswith("!"):
@@ -1138,7 +1138,7 @@ def handle_dragon_event(map_str: str, context: Context):
     if not context.run_recognition("Fight_CheckDragonBall", img).hit:
         return False
 
-    if context.run_recognition("Fight_FindDragon", img).hit:
+    if context.run_recognition("Fight_FindDragonV2", img).hit:
         logger.info("是神龙,俺,俺们有救了！！！")
         logger.info(f"当前:{map_str}")
         dragonwish(map_str, context)

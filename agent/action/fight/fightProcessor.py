@@ -465,7 +465,7 @@ class FightProcessor:
         """处理遇到神龙的逻辑"""
         if self.isCheckDragon:
             return False
-        if context.run_recognition("Fight_FindDragon", img).hit:
+        if context.run_recognition("Fight_FindDragonV2", img).hit:
             logger.info("是神龙,俺,俺们有救了！！！")
             fightUtils.dragonwish(self.targetWish, context)
             logger.info("神龙带肥家lo~")
