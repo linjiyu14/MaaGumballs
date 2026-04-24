@@ -124,5 +124,13 @@ class DailyGoldCoin_BuyClayPot_Costing(CustomAction):
                 return CustomAction.RunResult(success=False)
             context.run_task("DailyGoldCoin_BuyClayPot")
 
+        # 兜底 检测最后一次是否触发土罐彩蛋
+        if context.run_recognition(
+            "DailyGoldCoin_BuyClayPot_Kickback",
+            context.tasker.controller.post_screencap().wait().get(),
+        ).hit:
+            logger.info("触发了土罐彩蛋")
+            context.run_task("DailyGoldCoin_BuyClayPot_Kickback_Confirm")
+
         context.run_task("ReturnBigMap")
         return CustomAction.RunResult(success=True)
