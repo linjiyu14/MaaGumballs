@@ -570,10 +570,10 @@ class Mars101(CustomAction):
                 "param"
             ]["expected"][0]
         ).lower() == "true"
-        self.manual_leave_para = bool(
-            context.get_node_data("Fight_ManualLeave")["enabled"]
-        )
-        logger.info(f"手动结算：{self.manual_leave_para}")
+        self.manual_leave_para = context.get_node_data("Fight_ManualLeave")[
+            "recognition"
+        ]["param"]["expected"][0]
+        logger.info(f"结算方式：{self.manual_leave_para}")
         # initialize
         self.initialize(context)
         logger.info(f"本次任务目标层数: {self.target_leave_layer_para}")
@@ -609,7 +609,7 @@ class Mars101(CustomAction):
         logger.info(f"马尔斯探索结束，当前到达{self.layers}层")
 
         # 手动结算·暂离
-        if self.manual_leave_para:
+        if self.manual_leave_para in ["清怪暂离", "九柱暂离"]:
             time.sleep(1)
             context.run_task("Save_Status")
             send_message(

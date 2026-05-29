@@ -284,7 +284,7 @@
                 "目标大地数量",
                 "开启自动拾取",
                 "魔法系冈布奥选择",
-                "是否手动结算",
+                "结算方式",
                 "是否启用手记开启恶魔系称号"
             ],
             "pipeline_override": {
@@ -909,23 +909,30 @@
                 }
             ]
         },
-        "是否手动结算": {
-            "type": "switch",
-            "default_case": "No",
+        "结算方式": {
+            "default_case": "自动结算",
             "cases": [
                 {
-                    "name": "No",
+                    "name": "自动结算",
                     "pipeline_override": {
                         "Fight_ManualLeave": {
-                            "enabled": false
+                            "expected": "自动结算"
                         }
                     }
                 },
                 {
-                    "name": "Yes",
+                    "name": "九柱暂离",
                     "pipeline_override": {
                         "Fight_ManualLeave": {
-                            "enabled": true
+                            "expected": "九柱暂离"
+                        }
+                    }
+                },
+                {
+                    "name": "清怪暂离",
+                    "pipeline_override": {
+                        "Fight_ManualLeave": {
+                            "expected": "清怪暂离"
                         }
                     }
                 }
