@@ -19,7 +19,7 @@ class MarsSettlementManager:
     def handle_before_leave_maze_event(self, context: Context):
         logger.info("触发Mars结算事件")
         context.run_task("Fight_ReturnMainWindow")
-        if not self.mars.manual_leave_para:
+        if self.mars.manual_leave_para != "清怪暂离":
             # 名导心得相关
             if self.mars.director_para:
                 fightUtils.openBagAndUseItem(
@@ -138,7 +138,7 @@ class MarsSettlementManager:
                     ):
                         break
         else:
-            logger.info("需要手动结算")
+            logger.info("需要手动结算，不放柱子直接暂离")
         # 压血相关
         # # 这里进夹层压血
         # if self.mars.target_earthgate_para >= 0:

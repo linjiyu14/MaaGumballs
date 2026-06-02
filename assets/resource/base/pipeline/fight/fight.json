@@ -784,6 +784,7 @@
         "timeout": 3000
     },
     "Fight_ManualLeave": {
-        "enabled": false
+        "recognition": "OCR",
+        "expected": "false"
     }
 }
