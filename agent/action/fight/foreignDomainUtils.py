@@ -90,7 +90,7 @@ class foreignDomainUtils:
                     time.sleep(1)
                 else:
                     logger.info(f"{key}舰队已返回,无需操作")
-            if nums := self.checkAllFleetStatus(context) == 4:
+            if self.checkAllFleetStatus(context) == 4:
                 logger.info("所有舰队已返回")
 
                 break
