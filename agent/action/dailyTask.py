@@ -24,6 +24,7 @@ class DailyTask(CustomAction):
             "SkyExplore",  # 天空探索
             "RuinsExplore",  # 遗迹探索
             "WeeklyRaid",  # 每周周赛
+            "FD_Explore",  # 秩序域挖矿
         ]
 
         for key in custom_order:
@@ -160,4 +161,14 @@ class DailyGoldCoin_BuyClayPot_Costing(CustomAction):
             context.run_task("DailyGoldCoin_BuyClayPot_Kickback_Confirm")
 
         context.run_task("ReturnBigMap")
+        return CustomAction.RunResult(success=True)
+
+
+@AgentServer.custom_action("DailyForeignDomain_Explore")
+class DailyForeignDomain_Explore(CustomAction):
+
+    def run(
+        self, context: Context, argv: CustomAction.RunArg
+    ) -> CustomAction.RunResult:
+
         return CustomAction.RunResult(success=True)

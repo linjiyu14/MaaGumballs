@@ -1,0 +1,85 @@
+{
+    "FD_Entry": {
+        "next": [
+            "FD_GetInDomain",
+            "[JumpBack]TSD_BackToBigMap"
+        ],
+        "post_delay": 1000
+    },
+    "FD_GetInDomain": {
+        "recognition": "OCR",
+        "expected": [
+            "外域"
+        ],
+        "roi": [
+            617,
+            1235,
+            87,
+            37
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "FD_GetInDomain_Confirm"
+        ]
+    },
+    "FD_GetInDomain_Confirm": {
+        "recognition": "TemplateMatch",
+        "template": [
+            "fight/time_space_domain/domain1.png",
+            "fight/time_space_domain/domain2.png"
+        ],
+        "roi": [
+            213,
+            567,
+            277,
+            216
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 2000,
+        "next": [
+            "FD_CheckInFD",
+            "[JumpBack]FD_CheckInTSD"
+        ]
+    },
+    "FD_CheckInFD": {
+        "recognition": "OCR",
+        "expected": [
+            "秩序域"
+        ],
+        "roi": [
+            153,
+            726,
+            82,
+            35
+        ],
+        "post_delay": 2000,
+        "next": [
+            "FD_Explore"
+        ]
+    },
+    "FD_CheckInTSD": {
+        "recognition": "OCR",
+        "expected": [
+            "时空域"
+        ],
+        "roi": [
+            153,
+            726,
+            82,
+            35
+        ],
+        "action": "StopTask",
+        "focus": {
+            "succeeded": "[color:red]这不是秩序域，请冒险者大人快来看看~~[/color]"
+        }
+    },
+    "FD_Explore": {
+        "action": "Custom",
+        "custom_action": "DailyForeignDomain_Explore",
+        "post_delay": 500,
+        "timeout": 2000
+    }
+}

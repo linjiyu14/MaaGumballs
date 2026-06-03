@@ -146,7 +146,8 @@
                 "开启派遣魔蜥",
                 "开启领取炼金招牌",
                 "开启天空扫荡",
-                "开启遗迹扫荡"
+                "开启遗迹扫荡",
+                "开启秩序域挖矿"
             ],
             "doc": [
                 "### 每日收菜注意事项",
@@ -710,6 +711,28 @@
                     "name": "Yes",
                     "pipeline_override": {
                         "WeeklyRaid": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "开启秩序域挖矿": {
+            "type": "switch",
+            "default_case": "Yes",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "FD_Explore": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "FD_Explore": {
                             "enabled": true
                         }
                     }
