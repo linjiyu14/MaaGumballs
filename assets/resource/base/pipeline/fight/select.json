@@ -273,7 +273,10 @@
     },
     "select_InputBox_Success": {
         "recognition": "TemplateMatch",
-        "template": "fight/UniversalUI/GumballStar.png",
+        "template": [
+            "fight/UniversalUI/GumballStar.png",
+            "fight/UniversalUI/GumballStar1.png"
+        ],
         "roi": [
             74,
             640,
