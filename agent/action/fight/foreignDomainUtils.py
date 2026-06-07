@@ -90,7 +90,15 @@ class foreignDomainUtils:
                     time.sleep(1)
                 else:
                     logger.info(f"{key}舰队已返回,无需操作")
+            max_wait_seconds = 300
+            start_time = time.time()
             while self.checkAllFleetStatus(context) != 4:
+                if context.tasker.stopping:
+                    logger.info("检测到停止任务, 结束等待所有舰队返回")
+                    return CustomAction.RunResult(success=False)
+                if time.time() - start_time > max_wait_seconds:
+                    logger.warning("等待所有舰队返回超时, 可能存在识别失败或界面异常")
+                    return CustomAction.RunResult(success=False)
                 time.sleep(1)
             logger.info("所有舰队已返回")
             break
@@ -134,11 +142,20 @@ class foreignDomainUtils:
                     time.sleep(1)
                 else:
                     logger.info(f"{key}舰队已返回,无需操作")
+            max_wait_seconds = 300
+            start_time = time.time()
             while self.checkAllFleetStatus(context) != 4:
+                if context.tasker.stopping:
+                    logger.info("检测到停止任务, 结束等待所有舰队返回")
+                    return CustomAction.RunResult(success=False)
+                if time.time() - start_time > max_wait_seconds:
+                    logger.warning("等待所有舰队返回超时, 可能存在识别失败或界面异常")
+                    return CustomAction.RunResult(success=False)
                 time.sleep(1)
             logger.info("所有舰队已返回")
             break
         return True
+
     # 关闭联盟聊天窗口
     def closeUnionMsgBox(self, context: Context) -> bool:
         img = context.tasker.controller.post_screencap().wait().get()
