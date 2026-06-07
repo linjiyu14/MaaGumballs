@@ -26,7 +26,7 @@ class DailyTask(CustomAction):
             "SkyExplore",  # 天空探索
             "RuinsExplore",  # 遗迹探索
             "WeeklyRaid",  # 每周周赛
-            "FD_Entry"
+            "FD_Entry" # 秩序域挖矿
         ]
 
         for key in custom_order:
