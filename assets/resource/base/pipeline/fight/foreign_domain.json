@@ -1,0 +1,173 @@
+{
+    "FD_Entry": {
+        "next": [
+            "FD_GetInDomain",
+            "[JumpBack]TSD_BackToBigMap"
+        ],
+        "post_delay": 1000
+    },
+    "FD_GetInDomain": {
+        "recognition": "OCR",
+        "expected": [
+            "外域"
+        ],
+        "roi": [
+            617,
+            1235,
+            87,
+            37
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "FD_GetInDomain_Confirm"
+        ]
+    },
+    "FD_GetInDomain_Confirm": {
+        "recognition": "TemplateMatch",
+        "template": [
+            "fight/time_space_domain/domain1.png",
+            "fight/time_space_domain/domain2.png"
+        ],
+        "roi": [
+            213,
+            567,
+            277,
+            216
+        ],
+        "action": "Click",
+        "post_delay": 3000,
+        "timeout": 2000,
+        "next": [
+            "FD_CheckInFD",
+            "[JumpBack]FD_CheckInTSD"
+        ]
+    },
+    "FD_CheckInFD": {
+        "recognition": "OCR",
+        "expected": [
+            "秩序域"
+        ],
+        "roi": [
+            153,
+            726,
+            82,
+            35
+        ],
+        "post_delay": 2000,
+        "next": [
+            "FD_Explore"
+        ]
+    },
+    "FD_CheckInTSD": {
+        "recognition": "OCR",
+        "expected": [
+            "时空域"
+        ],
+        "roi": [
+            153,
+            726,
+            82,
+            35
+        ],
+        "action": "StopTask",
+        "focus": {
+            "succeeded": "[color:red]这不是秩序域，请冒险者大人快来看看~~[/color]"
+        }
+    },
+    "FD_Explore": {
+        "action": "Custom",
+        "custom_action": "DailyForeignDomain_Explore",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "FD_FindPlanet": {
+        "recognition": "TemplateMatch",
+        "template": "fight/time_space_domain/planetU.png",
+        "roi": [
+            12,
+            244,
+            697,
+            905
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "FD_PlanetExplore": {
+        "recognition": "OCR",
+        "expected": [
+            "查看"
+        ],
+        "roi": [
+            12,
+            184,
+            699,
+            1082
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000,
+        "next": [
+            "FD_StartLevy",
+            "[JumpBack]FD_Levy",
+            "[JumpBack]FD_FleetCommand"
+        ]
+    },
+    "FD_FleetCommand": {
+        "recognition": "OCR",
+        "expected": "舰队指令",
+        "roi": [
+            48,
+            1179,
+            182,
+            68
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
+    },
+    "FD_Levy": {
+        "recognition": "OCR",
+        "expected": [
+            "征收",
+            "矿藏",
+            "开发"
+        ],
+        "roi": [
+            46,
+            305,
+            642,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "FD_StartLevy": {
+        "recognition": "OCR",
+        "expected": [
+            "开始"
+        ],
+        "roi": [
+            127,
+            798,
+            462,
+            188
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "FD_ReturnFleet": {
+        "next": [
+            "TSD_checkTargetFleetFree",
+            "[JumpBack]TSD_View",
+            "[JumpBack]FD_FleetCommand",
+            "[JumpBack]TSD_WithdrawFleet"
+        ],
+        "post_delay": 100,
+        "timeout": 2000
+    }
+}

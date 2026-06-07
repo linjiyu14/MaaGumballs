@@ -47,19 +47,19 @@ class foreignDomainUtils:
         else:
             return 0
 
-    # 返回所有舰队
+    # 返回所有舰队-时空域
     def returnFleets(self, context: Context) -> bool | CustomAction.RunResult:
         while True:
             if context.tasker.stopping:
                 logger.info("检测到停止任务, 开始退出agent")
                 return CustomAction.RunResult(success=False)
             img = context.tasker.controller.post_screencap().wait().get()
-            for key in self.TSD.fleetRoiList:
+            for key in self.fleetRoiList:
                 status = context.run_recognition(
                     "TSD_checkFreeFleet",
                     img,
                     pipeline_override={
-                        "TSD_checkFreeFleet": {"roi": self.TSD.fleetRoiList[key]}
+                        "TSD_checkFreeFleet": {"roi": self.fleetRoiList[key]}
                     },
                 )
                 if not status.hit:
@@ -68,14 +68,14 @@ class foreignDomainUtils:
                     context.run_task(
                         "TSD_ClickFleet",
                         pipeline_override={
-                            "TSD_ClickFleet": {"target": self.TSD.fleetRoiList[key]}
+                            "TSD_ClickFleet": {"target": self.fleetRoiList[key]}
                         },
                     )
                     context.run_task(
                         "TSD_ReturnFleet",
                         pipeline_override={
                             "TSD_checkTargetFleetFree": {
-                                "roi": self.TSD.fleetRoiList[key]
+                                "roi": self.fleetRoiList[key]
                             },
                             "TSD_View": {
                                 "next": [
@@ -90,10 +90,70 @@ class foreignDomainUtils:
                     time.sleep(1)
                 else:
                     logger.info(f"{key}舰队已返回,无需操作")
-            if self.checkAllFleetStatus(context) == 4:
-                logger.info("所有舰队已返回")
-
-                break
+            max_wait_seconds = 300
+            start_time = time.time()
+            while self.checkAllFleetStatus(context) != 4:
+                if context.tasker.stopping:
+                    logger.info("检测到停止任务, 结束等待所有舰队返回")
+                    return CustomAction.RunResult(success=False)
+                if time.time() - start_time > max_wait_seconds:
+                    logger.warning("等待所有舰队返回超时, 可能存在识别失败或界面异常")
+                    return CustomAction.RunResult(success=False)
+                time.sleep(1)
+            logger.info("所有舰队已返回")
+            break
+        return True
+    
+    # 返回所有舰队-外域
+    def returnFleets_FD(self, context: Context) -> bool | CustomAction.RunResult:
+        while True:
+            if context.tasker.stopping:
+                logger.info("检测到停止任务, 开始退出agent")
+                return CustomAction.RunResult(success=False)
+            img = context.tasker.controller.post_screencap().wait().get()
+            for key in self.fleetRoiList:
+                status = context.run_recognition(
+                    "TSD_checkFreeFleet",
+                    img,
+                    pipeline_override={
+                        "TSD_checkFreeFleet": {"roi": self.fleetRoiList[key]}
+                    },
+                )
+                if not status.hit:
+                    time.sleep(1)
+                    logger.info(f"正在返回{key}舰队")
+                    context.run_task(
+                        "TSD_ClickFleet",
+                        pipeline_override={
+                            "TSD_ClickFleet": {"target": self.fleetRoiList[key]}
+                        },
+                    )
+                    context.run_task(
+                        "FD_ReturnFleet",
+                        pipeline_override={
+                            "TSD_checkTargetFleetFree": {
+                                "roi": self.fleetRoiList[key]
+                            },
+                            "TSD_WithdrawFleet": {
+                                "roi": [11, 247, 690, 1018]
+                            },
+                        },
+                    )
+                    time.sleep(1)
+                else:
+                    logger.info(f"{key}舰队已返回,无需操作")
+            max_wait_seconds = 300
+            start_time = time.time()
+            while self.checkAllFleetStatus(context) != 4:
+                if context.tasker.stopping:
+                    logger.info("检测到停止任务, 结束等待所有舰队返回")
+                    return CustomAction.RunResult(success=False)
+                if time.time() - start_time > max_wait_seconds:
+                    logger.warning("等待所有舰队返回超时, 可能存在识别失败或界面异常")
+                    return CustomAction.RunResult(success=False)
+                time.sleep(1)
+            logger.info("所有舰队已返回")
+            break
         return True
 
     # 关闭联盟聊天窗口

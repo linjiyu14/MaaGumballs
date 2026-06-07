@@ -25,8 +25,6 @@ class TSD_explore(CustomAction):
         self.planetList: list = []  # 记录探索的星球
 
         self.FDUtils = foreignDomainUtils(self)
-        self.fleetRoiList = self.FDUtils.fleetRoiList  # 舰队状态roi列表
-        self.default_fleets = self.FDUtils.default_fleets  # 默认舰队顺序
 
     # 获取舰队战力值
     def getAllFleetPower(self, context: Context) -> bool:
@@ -334,7 +332,9 @@ class TSD_explore(CustomAction):
             if taskList[key]["enabled"] == True:
                 logger.info(f"开始执行【{ taskList[key]['name'] }】任务")
                 self.fleet_list = (
-                    self.default_fleets if key == "explore" else self.fight_fleets
+                    self.FDUtils.default_fleets
+                    if key == "explore"
+                    else self.fight_fleets
                 )  # 如果是探索任务，使用全部舰队
                 while self.checkTargetExist(context, key, taskList[key]["threshold"]):
                     if context.tasker.stopping:
