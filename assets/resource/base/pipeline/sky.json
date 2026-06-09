@@ -66,9 +66,9 @@
         "target": true,
         "target_offset": [
             0,
+            -50,
             0,
-            0,
-            -63
+            0
         ],
         "next": [
             "AutoSky_SkyExplore"
