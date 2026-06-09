@@ -144,7 +144,7 @@
             58
         ],
         "action": "Click",
-        "post_delay": 1000,
+        "post_delay": 3000,
         "next": [
             "DailySweep_Fail",
             "DailySweep_Finish",
