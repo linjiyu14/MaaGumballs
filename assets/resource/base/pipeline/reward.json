@@ -146,6 +146,14 @@
         "timeout": 2000
     },
     "ObtainFriendReward": {
+        "next": [
+            "OneClickCompleteAllReward_GiveGifts",
+            "OneClickCompleteAllReward_PickUpGifts",
+            "[JumpBack]ObtainFriendReward_Click",
+            "[JumpBack]Activity_List_Click"
+        ]
+    },
+    "ObtainFriendReward_Click": {
         "recognition": "TemplateMatch",
         "template": "reward/friendReward.png",
         "roi": [
@@ -156,11 +164,22 @@
         ],
         "action": "Click",
         "post_delay": 1000,
-        "timeout": 2000,
-        "next": [
-            "OneClickCompleteAllReward_GiveGifts",
-            "OneClickCompleteAllReward_PickUpGifts"
-        ]
+        "timeout": 2000
+    },
+    "Activity_List_Click": {
+        "recognition": "TemplateMatch",
+        "template": [
+            "reward/activity.png"
+        ],
+        "roi": [
+            563,
+            951,
+            146,
+            201
+        ],
+        "action": "Click",
+        "post_delay": 500,
+        "timeout": 2000
     },
     "OneClickCompleteAllReward_PickUpGifts": {
         "recognition": "OCR",
