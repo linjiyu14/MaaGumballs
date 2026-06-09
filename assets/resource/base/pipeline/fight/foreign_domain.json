@@ -112,6 +112,8 @@
         "next": [
             "FD_StartLevy",
             "[JumpBack]FD_Levy",
+            "[JumpBack]FD_Resource",
+            "[JumpBack]FD_Develop",
             "[JumpBack]FD_FleetCommand"
         ]
     },
@@ -131,8 +133,36 @@
     "FD_Levy": {
         "recognition": "OCR",
         "expected": [
-            "征收",
-            "矿藏",
+            "征收"
+        ],
+        "roi": [
+            46,
+            305,
+            642,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "FD_Resource": {
+        "recognition": "OCR",
+        "expected": [
+            "矿藏"
+        ],
+        "roi": [
+            46,
+            305,
+            642,
+            394
+        ],
+        "action": "Click",
+        "post_delay": 1000,
+        "timeout": 2000
+    },
+    "FD_Develop": {
+        "recognition": "OCR",
+        "expected": [
             "开发"
         ],
         "roi": [
