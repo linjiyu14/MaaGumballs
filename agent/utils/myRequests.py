@@ -1,7 +1,7 @@
 from urllib.request import Request, urlopen
 from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.error import HTTPError, URLError
-import json
+import json, ssl
 
 
 def get_request(url, params=None, headers=None, timeout=10):
@@ -73,7 +73,8 @@ def _send_request(req, headers, timeout):
 
     try:
         # 发送请求并获取响应
-        with urlopen(req, timeout=timeout) as res:
+        context = ssl._create_unverified_context()
+        with urlopen(req, timeout=timeout, context=context) as res:
             result["status"] = res.status
             result["content"] = res.read()
             result["headers"] = dict(res.headers.items())
