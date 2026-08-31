@@ -41,7 +41,7 @@ def read_config() -> bool:
                 "DingTalk": ["ExternalNotificationDingTalkToken", "ExternalNotificationDingTalkSecret"],
                 "Qmsg": ["ExternalNotificationQmsgServer", "ExternalNotificationQmsgKey",
                          "ExternalNotificationQmsgBot", "ExternalNotificationQmsgUser"],
-                "PushPlus": ["pushplus_token"],
+                "pushplus_token": ["pushplus_token"],
                 "Telegram": [("telegram_token", "ExternalNotificationTelegramBotToken", ""),
                              ("telegram_chat_id", "ExternalNotificationTelegramChatId", "")],
                 "Lark": ["ExternalNotificationLarkWebhookUrl", "ExternalNotificationLarkID",
@@ -372,7 +372,7 @@ def send_lark(dp: dict, title: str, text: str) -> bool:
             response = post_request(
                 webhook_url, data=json.dumps(data).encode("utf-8"), headers=headers
             )
-        elif app_id:
+        elif app_id and app_secret:
             # 使用应用ID和签名发送
             timestamp = str(int(time.time()))
             sign = lark_sign(timestamp, app_secret)
@@ -536,7 +536,7 @@ def send_discord_webhook(dp: dict, title: str, text: str) -> bool:
         response = post_request(
             webhook_url, data=json.dumps(payload).encode("utf-8"), headers=headers
         )
-        if response.get("status") == 200:
+        if response.get("status") == 200 or response.get("status") == 204:
             logger.info("Discord Webhook消息推送成功")
             end = time.time()
             logger.debug(f"Discord Webhook消息发送耗时: {end - start}s")
