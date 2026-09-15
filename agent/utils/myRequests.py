@@ -73,8 +73,7 @@ def _send_request(req, headers, timeout):
 
     try:
         # 发送请求并获取响应
-        context = ssl._create_unverified_context()
-        with urlopen(req, timeout=timeout, context=context) as res:
+        with urlopen(req, timeout=timeout) as res:
             result["status"] = res.status
             result["content"] = res.read()
             result["headers"] = dict(res.headers.items())
