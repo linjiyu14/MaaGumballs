@@ -198,14 +198,15 @@ def send_qmsg(dp: dict, title: str, text: str) -> bool:
     bot = dp.get("ExternalNotificationQmsgBot")
     user = dp.get("ExternalNotificationQmsgUser")
 
-    if server and key and bot and user:
+    if server:
 
-        url = f"{ server }/send/{ key }"
+        url = f"{ server }/jsend/{ key }"
         data = {"msg": text, "qq": user, "bot": bot}
         logger.debug(f"Qmsg_url：{url}")
+        headers = {"Content-Type": "application/json"}
         try:
             if is_valid_url(url):
-                response = post_request(url, data=data)
+                response = post_request(url, data=data, headers=headers)
                 if response.get("status") == 200:
                     if response.get("json")["code"] == 0:
                         logger.info("消息推送成功")
