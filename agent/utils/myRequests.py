@@ -42,15 +42,21 @@ def post_request(url, data=None, headers=None, timeout=10):
     post_data = None
     if data is not None:
         if isinstance(data, dict):
-            post_data = urlencode(data).encode("utf-8")
-            # 设置默认 Content-Type
-            headers = headers or {}
-            if "Content-Type" not in headers:
+            content_type = headers.get("Content-Type", "")
+            if "application/json" in content_type:
+                post_data = json.dumps(data).encode("utf-8")
+            else:
+                post_data = urlencode(data).encode("utf-8")
+                # 只有走表单分支时才补默认 Content-Type
                 headers.setdefault("Content-Type", "application/x-www-form-urlencoded")
         elif isinstance(data, bytes):
             post_data = data
+        elif isinstance(data, str):
+            post_data = data.encode("utf-8")
 
-    # 创建请求对象
+    headers.setdefault("User-Agent", "Mozilla/5.0")
+    print(headers)
+    print(post_data)
     req = Request(url, data=post_data, method="POST")
     return _send_request(req, headers, timeout)
 

@@ -67,7 +67,10 @@ def read_config() -> bool:
                         target, source, default = item
                         if source is None:
                             source = target
-                    config[target] = decrypt(config.get(source, default)).strip()
+                    if config.get(source, default) is None:
+                        config[target] = ""
+                    else:
+                        config[target] = decrypt(config.get(source, default)).strip()
             logger.debug("配置文件解密成功！")
             return True
     except Exception:
